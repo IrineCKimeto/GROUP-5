@@ -5,9 +5,9 @@ import uuid
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True,nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    role = db.Column(db.String(200), nullable=False,default = "user")
+    role = db.Column(db.String(200), nullable=False, default="user")
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,8 +16,7 @@ class Event(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     location = db.Column(db.String(200), nullable=False)
     ticket_price = db.Column(db.Float, nullable=False)
-    available_tickets = db.Column(db.Integer,nullable=False,default=50)
-    
+    available_tickets = db.Column(db.Integer, nullable=False, default=50)
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,5 +31,4 @@ class Payment(db.Model):
     ticket_id = db.Column(db.Integer, db.ForeignKey("ticket.id"), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(50), default="pending")
-    transaction_id = db.Column(db.String(30),unique=True,nullable=False,default=lambda: str(uuid.uuid4()))
-    
+    transaction_id = db.Column(db.String(30), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
