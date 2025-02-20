@@ -11,6 +11,8 @@ flask-cors = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 flask-restful = "*"
+psycopg2 = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
