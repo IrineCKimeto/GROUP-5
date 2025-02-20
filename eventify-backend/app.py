@@ -1,20 +1,25 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
-from datetime import datetime
-import uuid
+from flask_migrate import Migrate
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eventify.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 CORS(app)
+migrate = Migrate(app, db)
 
 # Import models after initializing the app and db
 from models import User, Event, Ticket, Payment
@@ -37,7 +42,7 @@ def login():
     user = User.query.filter_by(email=data["email"]).first()
     if user and bcrypt.check_password_hash(user.password, data["password"]):
         access_token = create_access_token(identity={"id": user.id, "email": user.email, "role": user.role})
-        refresh_token = create_access_token(identity={"id": user.id, "email": user.email, "role": user.role}, fresh=False)
+        refresh_token = create_refresh_token(identity={"id": user.id, "email": user.email, "role": user.role})
         return jsonify(access_token=access_token, refresh_token=refresh_token, role=user.role)
     return jsonify({"message": "Incorrect email or password"}), 401
 
