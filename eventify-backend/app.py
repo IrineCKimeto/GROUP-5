@@ -10,10 +10,16 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DATABASE = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
+SECRET_KEY = os.getenv("SECRET_KEY", "your-default-secret-key")
+
+# Create an instance of the Flask application
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+
+# Configure the app
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
+app.config['SECRET_KEY'] = SECRET_KEY
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
