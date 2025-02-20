@@ -24,15 +24,15 @@ nav ul li a:hover{
   color: blue;
 }
 
-.signin-container {
+.auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color:bisque;
+  background-color: whitesmoke;
 }
-.signin-form {
-  background: white;
+.auth-form {
+  background: beige;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -40,7 +40,7 @@ nav ul li a:hover{
   text-align: center;
 }
 
-.signin-form input {
+.auth-form input {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
@@ -48,7 +48,7 @@ nav ul li a:hover{
   border-radius: 5px;
 }
 
-.signin-form button {
+.auth-form button {
   width: 100%;
   padding: 10px;
   background-color: #007bff;
@@ -59,16 +59,16 @@ nav ul li a:hover{
   font-size: 16px;
 }
 
-.signin-form button:hover {
+.auth-form button:hover {
   background-color: #0056b3;
 }
-.signin-form a {
+.auth-form a {
   display: block;
   margin-top: 10px;
   color: #007bff;
   text-decoration: none;
 }
 
-.signin-form a:hover {
+.auth-form a:hover {
   text-decoration: underline;
 }
