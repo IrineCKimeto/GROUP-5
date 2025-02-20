@@ -1,70 +1,73 @@
-# Getting Started with Create React App
+# Eventify Frontend 🎟️  
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the **frontend** of **Eventify**, an event management and ticketing platform built using **React.js**. It provides a seamless user experience for browsing, creating, and managing events.  
 
-## Available Scripts
+## 🚀 Features  
+✅ **Sign-In Page** – User authentication interface  
+✅ **Home Page** – Displays featured & upcoming events  
+✅ **Events Page** – Browse and explore events  
+✅ **About Us Page** – Learn more about Eventify  
 
-In the project directory, you can run:
+## 🛠 Tech Stack  
+- **React.js** – UI framework  
+- **React Router** – Page navigation  
+- **Axios** – API requests  
+- **CSS** – Styling (in `App.css`)  
 
-### `npm start`
+## 🏗 Getting Started  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. Clone the Repository  
+```bash
+ git clone https://github.com/IrineCKimeto/GROUP-5.git
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 2. Navigate to the Frontend Folder  
+```bash
+ cd eventify-frontend
+```
 
-### `npm test`
+### 3. Install Dependencies  
+```bash
+ npm install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 4. Start the Development Server  
+```bash
+ npm start
+```
 
-### `npm run build`
+## 📁 Project Structure  
+```
+ eventify-frontend/
+ ├── 📂 src/
+ │   ├── 📂 components/    # Reusable UI components (e.g., Navbar)
+ │   ├── 📂 pages/         # App pages (SignIn, Home, Events, AboutUs)
+ │   ├── App.js           # Main component
+ │   ├── index.js         # Entry point
+ │   ├── App.css          # Global styles
+ ├── 📂 public/           # Static assets
+ ├── package.json        # Project dependencies
+ ├── README.md           # Project documentation
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🤝 Contributing  
+### Create a new branch  
+```bash
+ git checkout -b ft-branch-name
+```
+### Make your changes and commit  
+```bash
+ git commit -m "Commit message"
+```
+### Push to GitHub  
+```bash
+ git push origin ft-branch-name
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📧 Contact  
+For any questions or contributions, contact:  
+✉️ Muhsin Ali - muhsin.ali@student.moringaschool.com  
+✉️ Ian Masonik - ian.masonik@student.moringaschool.com  
+✉️ Irene Kimeto - irene.kimeto@student.moringaschool.com  
+✉️ Andrew Karanja - andrew.karanja@student.moringaschool.com  
+✉️ Lybrook Omondi - lybrook.omondi@student.moringaschool.com
