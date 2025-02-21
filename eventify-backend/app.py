@@ -15,6 +15,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(os.path.abspath(os.path.dirname(__file__)), 'app.db')}")
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "your-default-secret-key")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+
+
 # Initialize extensions
 bcrypt.init_app(app)
 jwt.init_app(app)
