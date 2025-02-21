@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 
 const SignInForm = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isRegister, setIsRegister] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -9,13 +15,27 @@ const SignInForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Signing in with:", formData);
+    console.log(isRegister ? "Registering user:" : "Signing in with:", formData);
   };
 
   return (
-    <div className="signin-container">
-      <form className="signin-form" onSubmit={handleSubmit}>
-        <h2>Sign In</h2>
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <h2>{isRegister ? "Register" : "Sign In"}</h2>
+
+        {isRegister && (
+          <>
+            <label>Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </>
+        )}
+
         <label>Email:</label>
         <input
           type="email"
@@ -27,16 +47,34 @@ const SignInForm = () => {
 
         <label>Password:</label>
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           name="password"
           value={formData.password}
           onChange={handleChange}
           required
         />
 
-        <button type="submit">Sign In</button>
+        <div className="show-password-container">
+          <input
+            type="checkbox"
+            id="showPassword"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          <label htmlFor="showPassword"> Show Password</label>
+        </div>
+
+        <button type="submit">{isRegister ? "Register" : "Sign In"}</button>
+
         <p>
-          <a href="#">Forgot password?</a>
+          {isRegister ? "Already have an account?" : "New here?"}{" "}
+          <button
+            type="button"
+            className="toggle-btn"
+            onClick={() => setIsRegister(!isRegister)}
+          >
+            {isRegister ? "Sign in" : "Create an account"}
+          </button>
         </p>
       </form>
     </div>
