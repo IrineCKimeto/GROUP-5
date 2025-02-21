@@ -1,41 +1,41 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
-from flask_cors import CORS
-from flask_migrate import Migrate
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 import os
+from extensions import bcrypt, jwt, cors, migrate, db
+from models import User, Event, Ticket, Payment
 
 # Load environment variables from .env file
 load_dotenv()
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATABASE = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
-SECRET_KEY = os.getenv("SECRET_KEY", "your-default-secret-key")
 
 # Create an instance of the Flask application
 app = Flask(__name__)
 
 # Configure the app
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(os.path.abspath(os.path.dirname(__file__)), 'app.db')}")
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "your-default-secret-key")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+# Initialize extensions
+bcrypt.init_app(app)
+jwt.init_app(app)
+cors.init_app(app)
+migrate.init_app(app, db)
+db.init_app(app)
 
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
-CORS(app)
-migrate = Migrate(app, db)
+def create_tokens(user):
+    access_token = create_access_token(identity={"id": user.id, "email": user.email, "role": user.role})
+    refresh_token = create_refresh_token(identity={"id": user.id, "email": user.email, "role": user.role})
+    return access_token, refresh_token
 
-# Import models after initializing the app and db
-from models import User, Event, Ticket, Payment
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Welcome to Eventify API"}), 200
 
 @app.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
     hashed_password = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
-    user_exists = User.query.filter_by(email=data["email"]).first()
-    if user_exists:
+    if User.query.filter_by(email=data["email"]).first():
         return jsonify({"error": "Email already registered"}), 400
     user = User(name=data["name"], email=data["email"], password=hashed_password, role=data.get("role", "user"))
     db.session.add(user)
@@ -47,8 +47,7 @@ def login():
     data = request.get_json()
     user = User.query.filter_by(email=data["email"]).first()
     if user and bcrypt.check_password_hash(user.password, data["password"]):
-        access_token = create_access_token(identity={"id": user.id, "email": user.email, "role": user.role})
-        refresh_token = create_refresh_token(identity={"id": user.id, "email": user.email, "role": user.role})
+        access_token, refresh_token = create_tokens(user)
         return jsonify(access_token=access_token, refresh_token=refresh_token, role=user.role)
     return jsonify({"message": "Incorrect email or password"}), 401
 
@@ -56,7 +55,7 @@ def login():
 @jwt_required(refresh=True)
 def refresh():
     current_user = get_jwt_identity()
-    new_access_token = create_access_token(identity={"id": current_user["id"], "email": current_user["email"], "role": current_user["role"]}, fresh=False)
+    new_access_token = create_access_token(identity=current_user, fresh=False)
     return jsonify(access_token=new_access_token), 201
 
 @app.route("/users", methods=["GET"])
@@ -86,12 +85,7 @@ def get_events():
 @jwt_required()
 def get_tickets():
     current_user = get_jwt_identity()
-
-    if current_user["role"] == "admin":
-        tickets = Ticket.query.all()
-    else:
-        # users only see their tickets
-        tickets = Ticket.query.filter_by(user_id=current_user["id"]).all()
+    tickets = Ticket.query.filter_by(user_id=current_user["id"]).all() if current_user["role"] != "admin" else Ticket.query.all()
     return jsonify([{
         "id": t.id,
         "event_id": t.event_id,
