@@ -19,7 +19,7 @@ const eventsData = [
     category: 'Technology',
     featured: false,
   },
-  // Add more events here
+  
 ];
 
 function Events() {
@@ -39,7 +39,7 @@ function Events() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Search and Filter Section */}
+     
       <div className="mb-8">
         <input
           type="text"
@@ -57,7 +57,7 @@ function Events() {
             <option value="">All Categories</option>
             <option value="Music">Music</option>
             <option value="Technology">Technology</option>
-            {/* Add more categories here */}
+            
           </select>
           <input
             type="date"
@@ -75,7 +75,6 @@ function Events() {
         </div>
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Upcoming Events */}
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -90,7 +89,6 @@ function Events() {
           ))}
         </div>
 
-        {/* Featured Events */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Featured Events</h2>
           {filteredEvents.filter(event => event.featured).map(event => (
@@ -103,7 +101,6 @@ function Events() {
           ))}
         </div>
 
-        {/* Popular Categories */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Popular Categories</h2>
           <div className="bg-gray-100 rounded-lg p-4 mb-4">
@@ -114,7 +111,6 @@ function Events() {
             <h3 className="text-lg font-semibold">Technology</h3>
             <button className="text-blue-500 hover:underline">View Events</button>
           </div>
-          {/* Add more categories here */}
         </div>
       </div>
     </div>
