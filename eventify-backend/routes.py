@@ -39,14 +39,14 @@ def login():
 @routes.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
-    current_user = get_jwt_identity()
+    current_user = json.loads(get_jwt_identity())
     new_access_token = create_access_token(identity=current_user, fresh=False)
     return jsonify(access_token=new_access_token), 201
 
 @routes.route("/users", methods=["GET"])
 @jwt_required()
 def get_users():
-    current_user = get_jwt_identity()
+    current_user = json.loads(get_jwt_identity())
     if current_user["role"] != "admin":
         return jsonify({"message": "Access Forbidden"}), 403
     users = User.query.all()
@@ -69,7 +69,7 @@ def get_events():
 @routes.route("/tickets", methods=["GET"])
 @jwt_required()
 def get_tickets():
-    current_user = get_jwt_identity()
+    current_user = json.loads(get_jwt_identity())
     tickets = Ticket.query.filter_by(user_id=current_user["id"]).all() if current_user["role"] != "admin" else Ticket.query.all()
     return jsonify([{
         "id": t.id,
@@ -78,3 +78,34 @@ def get_tickets():
         "purchase_date": t.purchase_date,
         "status": t.status
     } for t in tickets])
+
+@routes.route("/tickets", methods=["POST"])
+@jwt_required()
+def create_ticket():
+    current_user = json.loads(get_jwt_identity())
+    data = request.get_json()
+    event = Event.query.get_or_404(data["event_id"])
+    if event.available_tickets < 1:
+        return jsonify({"message": "No tickets available"}), 400
+    ticket = Ticket(
+        event_id=event.id,
+        user_id=current_user["id"],
+        status="confirmed"
+    )
+    event.available_tickets -= 1
+    db.session.add(ticket)
+    db.session.commit()
+    return jsonify({"message": "Ticket booked successfully"}), 201
+
+@routes.route("/tickets/<int:ticket_id>", methods=["DELETE"])
+@jwt_required()
+def delete_ticket(ticket_id):
+    current_user = json.loads(get_jwt_identity())
+    ticket = Ticket.query.get_or_404(ticket_id)
+    if current_user["role"] != "admin" and ticket.user_id != current_user["id"]:
+        return jsonify({"message": "Access Forbidden"}), 403
+    event = Event.query.get(ticket.event_id)
+    event.available_tickets += 1
+    db.session.delete(ticket)
+    db.session.commit()
+    return jsonify({"message": "Ticket deleted successfully"}), 200
