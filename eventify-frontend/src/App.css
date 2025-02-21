@@ -146,3 +146,6 @@ nav ul li a:hover{
 .social-links a:hover {
   color: #007bff;
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
