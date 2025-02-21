@@ -1,6 +1,6 @@
-from app import db
 from datetime import datetime
 import uuid
+from extensions import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
