@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 const SignInForm = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -8,6 +7,7 @@ const SignInForm = () => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,20 +47,24 @@ const SignInForm = () => {
 
         <label>Password:</label>
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           name="password"
           value={formData.password}
           onChange={handleChange}
           required
         />
 
-        <button type="submit">{isRegister ? "Register" : "Sign In"}</button>
+        <div className="show-password-container">
+          <input
+            type="checkbox"
+            id="showPassword"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          <label htmlFor="showPassword"> Show Password</label>
+        </div>
 
-        {!isRegister && (
-          <p>
-            <Link to="/forgot-password">Forgot password?</Link>
-          </p>
-        )}
+        <button type="submit">{isRegister ? "Register" : "Sign In"}</button>
 
         <p>
           {isRegister ? "Already have an account?" : "New here?"}{" "}
