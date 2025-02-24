@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from extensions import bcrypt, db
 from models import User, Event, Ticket, Payment
+from datetime import datetime
 
 routes = Blueprint('routes', __name__)
 
@@ -65,6 +66,62 @@ def get_events():
         "ticket_price": e.ticket_price,
         "available_tickets": e.available_tickets
     } for e in events])
+
+
+@routes.route("/events", methods=["POST"])
+@jwt_required()
+def create_event():
+    current_user = json.loads(get_jwt_identity())
+    if current_user["role"] != "admin":
+        return jsonify({"error": "Access Forbidden: Admins only"}), 403
+    data = request.get_json()
+    if not data.get("title") or not data.get("location") or not data.get("ticket_price"):
+        return jsonify({"error": "Missing required fields"}), 400
+    new_event = Event(
+        title=data["title"],
+        description=data.get("description", ""),
+        date=datetime.now(),
+        location=data["location"],
+        ticket_price=data["ticket_price"],
+        available_tickets=data.get("available_tickets", 100)
+    )
+    db.session.add(new_event)
+    db.session.commit()
+    return jsonify({"message": "Event created successfully", "event_id": new_event.id}), 201
+
+@routes.route("/events/<int:event_id>", methods=["PUT"])
+@jwt_required()
+def update_event(event_id):
+    current_user = json.loads(get_jwt_identity())
+    if current_user["role"] != "admin":
+        return jsonify({"error": "Access Forbidden: Admins only"}), 403
+    event = Event.query.get(event_id)
+    if not event:
+        return jsonify({"error": "Event not found"}), 404
+    data = request.get_json()
+    event.title = data.get("title", event.title)
+    event.description = data.get("description", event.description)
+    event.date = data.get("date", event.date)
+    event.location = data.get("location", event.location)
+    event.ticket_price = data.get("ticket_price", event.ticket_price)
+    event.available_tickets = data.get("available_tickets", event.available_tickets)
+    db.session.commit()
+    return jsonify({"message": "Event updated successfully"})
+
+@routes.route("/events/<int:event_id>", methods=["DELETE"])
+@jwt_required()
+def delete_event(event_id):
+    current_user = json.loads(get_jwt_identity())
+    if current_user["role"] != "admin":
+        return jsonify({"error": "Access Forbidden: Admins only"}), 403
+    event = Event.query.get(event_id)
+    if not event:
+        return jsonify({"error": "Event not found"}), 404
+    db.session.delete(event)
+    db.session.commit()
+    return jsonify({"message": "Event deleted successfully"})
+
+
 
 @routes.route("/tickets", methods=["GET"])
 @jwt_required()
