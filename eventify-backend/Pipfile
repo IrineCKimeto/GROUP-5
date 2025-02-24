@@ -10,9 +10,9 @@ flask-sqlalchemy = "*"
 flask-cors = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
-flask-restful = "*"
 psycopg2 = "*"
 python-dotenv = "*"
+flask-restful = "*"
 
 [dev-packages]
 
