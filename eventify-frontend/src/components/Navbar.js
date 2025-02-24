@@ -1,11 +1,9 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import logo from '../logo/eventify-logo.png';
 
 function Navbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 bg-gray-800 px-4 py-3 z-50 relative">
-           
-       
             <div className="max-w-7xl mx-auto flex items-center justify-between relative">
                 {/* Logo with Text */}
                 <Link to="/" className="flex items-center space-x-3 group">
@@ -51,6 +49,11 @@ function Navbar() {
                     <li>
                         <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
                             About Us
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                            Support {/* Added the Support link here */}
                         </Link>
                     </li>
                     <li>
