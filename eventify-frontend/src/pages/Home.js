@@ -351,7 +351,7 @@ function Home() {
             Enhance Your Event with Add-Ons
           </h3>
           <p className="text-lg text-gray-600 mb-8">
-            Select from our exclusive add-ons to maximize your event’s impact.
+            Select from our exclusive add-ons to maximize your event's impact.
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             {addons.map((addon, idx) => (
