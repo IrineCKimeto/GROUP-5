@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignInForm = () => {
+  const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -13,9 +15,28 @@ const SignInForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(isRegister ? "Registering user:" : "Signing in with:", formData);
+
+    try {
+      const response = await fetch("http://localhost:3000/users");
+      const users = await response.json();
+
+      // Find user by email and password
+      const user = users.find(
+        (u) => u.email === formData.email && u.password === formData.password
+      );
+
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user)); // Store user info
+        window.dispatchEvent(new Event("userUpdated")); // Notify Navbar
+        navigate(user.role === "admin" ? "/admin/events" : "/events");
+      } else {
+        alert("Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+    }
   };
 
   return (
@@ -25,8 +46,18 @@ const SignInForm = () => {
           {/* Logo/Brand Section */}
           <div className="text-center">
             <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-              <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+              <svg
+                className="h-8 w-8 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+                />
               </svg>
             </div>
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900 tracking-tight">
@@ -40,25 +71,23 @@ const SignInForm = () => {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md space-y-4">
               {/* Name Field (Register Only) */}
-              <div className={`transition-all duration-300 ${isRegister ? 'block' : 'hidden'}`}>
-                {isRegister && (
-                  <div className="relative">
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                      Full Name
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required={isRegister}
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-150"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                )}
-              </div>
+              {isRegister && (
+                <div className="relative">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required={isRegister}
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-150"
+                    placeholder="John Doe"
+                  />
+                </div>
+              )}
 
               {/* Email Field */}
               <div className="relative">
