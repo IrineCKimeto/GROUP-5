@@ -81,6 +81,11 @@ function Navbar() {
             </Link>
           </li>
           <li>
+            <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+              Profile
+            </Link>
+          </li>
+          <li>
             <NotificationsIcon />
           </li>
           <li>
