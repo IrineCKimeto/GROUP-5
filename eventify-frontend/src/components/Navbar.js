@@ -12,6 +12,7 @@ function Navbar() {
       setUser(storedUser ? JSON.parse(storedUser) : null);
     };
 
+
     updateUser();
     window.addEventListener("userUpdated", updateUser);
 
@@ -97,6 +98,47 @@ function Navbar() {
       </div>
     </nav>
   );
+
+                {/* Navigation Links */}
+                <ul className="flex items-center space-x-8">
+                    <li>
+                        <Link to="/" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                            Home
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/events" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                            Events
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                            About Us
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                            Support {/* Added the Support link here */}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                            Profile
+                        </Link>
+                    </li>
+                    <li>
+                        <Link 
+                            to="/signin" 
+                            className="px-4 py-2 rounded-lg bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-colors duration-200 relative group"
+                        >
+                            Sign In
+                        </Link>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    );
+
 }
 
 export default Navbar;
