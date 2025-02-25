@@ -7,6 +7,7 @@ import AboutUs from "./pages/AboutUs"
 import Support from './pages/support';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import UserProfile from "./pages/UserProfile";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </main>
         <Footer />
