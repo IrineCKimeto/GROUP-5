@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logo from "../logo/eventify-logo.png";
+import NotificationsIcon from "./NotificationsIcon";
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -78,6 +79,9 @@ function Navbar() {
             <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
               Support
             </Link>
+          </li>
+          <li>
+            <NotificationsIcon />
           </li>
           <li>
             {user ? (
