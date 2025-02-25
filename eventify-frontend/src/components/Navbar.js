@@ -57,6 +57,11 @@ function Navbar() {
                         </Link>
                     </li>
                     <li>
+                        <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                            Profile
+                        </Link>
+                    </li>
+                    <li>
                         <Link 
                             to="/signin" 
                             className="px-4 py-2 rounded-lg bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-colors duration-200 relative group"
