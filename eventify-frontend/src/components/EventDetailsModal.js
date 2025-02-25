@@ -1,20 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 function EventDetailsModal({ event, onClose }) {
-  const [paymentMethod, setPaymentMethod] = useState('mpesa');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  
-  const handlePayment = (e) => {
-    e.preventDefault();
-    // Here you would integrate with your payment API
-    console.log('Processing payment:', {
-      method: paymentMethod,
-      phoneNumber,
-      event: event.title,
-      amount: event.price
-    });
-  };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 max-w-2xl w-full mx-4">
@@ -27,7 +13,7 @@ function EventDetailsModal({ event, onClose }) {
           </button>
         </div>
 
-        <div className="space-y-4 mb-8">
+        <div className="space-y-4">
           <p className="text-gray-600">{event.description}</p>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -48,50 +34,9 @@ function EventDetailsModal({ event, onClose }) {
             </div>
           </div>
         </div>
-
-        <div className="border-t pt-6">
-          <h3 className="text-xl font-semibold mb-4">Payment Details</h3>
-          <form onSubmit={handlePayment} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Payment Method
-              </label>
-              <select
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              >
-                <option value="mpesa">M-Pesa</option>
-                <option value="card">Credit/Debit Card</option>
-              </select>
-            </div>
-
-            {paymentMethod === 'mpesa' && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  M-Pesa Phone Number
-                </label>
-                <input
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="254700000000"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Pay Now
-            </button>
-          </form>
-        </div>
       </div>
     </div>
   );
 }
 
-export default EventDetailsModal; 
+export default EventDetailsModal;
