@@ -73,7 +73,7 @@ function Home() {
     },
     {
       quote:
-        "We've seen a 60% reduction in management time and a 25% increase in ticket sales since switching to EventHub.",
+        "We've seen a 60% reduction in management time and a 25% increase in ticket sales since switching to Eventify.",
       author: "Emmanuel Philip",
       // role: "CEO, Conference Solutions",
     },
