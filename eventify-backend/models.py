@@ -17,6 +17,9 @@ class Event(db.Model):
     location = db.Column(db.String(200), nullable=False)
     ticket_price = db.Column(db.Float, nullable=False)
     available_tickets = db.Column(db.Integer, nullable=False, default=50)
+    category = db.Column(db.String(100), nullable=False)
+    featured = db.Column(db.Boolean, default=False)
+    image = db.Column(db.String(200), nullable=True)
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
