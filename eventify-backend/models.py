@@ -11,15 +11,15 @@ class User(db.Model):
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
-    location = db.Column(db.String(200), nullable=False)
-    ticket_price = db.Column(db.Float, nullable=False)
-    available_tickets = db.Column(db.Integer, nullable=False, default=50)
-    category = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50), nullable=False)
     featured = db.Column(db.Boolean, default=False)
-    image = db.Column(db.String(200), nullable=True)
+    ticket_price = db.Column(db.Float, nullable=False)
+    available_tickets = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(255), nullable=True)
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
