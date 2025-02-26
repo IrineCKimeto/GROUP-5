@@ -1,83 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EventDetailsModal from '../components/EventDetailsModal';
 import CartSidebar from '../components/CartSideBar';
-
-const eventsData = [
-  {
-    id: 1,
-    title: 'Music Concert',
-    description:
-      'A great music concert featuring top Kenyan artists including Sauti Sol and Nyashinski.',
-    date: '2025-03-15',
-    location: 'KICC, Nairobi',
-    category: 'Music',
-    featured: true,
-    price: 2500,
-    image:
-      'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-  },
-  {
-    id: 2,
-    title: 'Tech Conference 2025',
-    description:
-      'Annual tech conference showcasing the latest innovations in AI, blockchain, and cloud computing.',
-    date: '2025-04-20',
-    location: 'Sarit Centre, Nairobi',
-    category: 'Technology',
-    featured: false,
-    price: 3000,
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-  },
-  {
-    id: 3,
-    title: 'Food & Wine Festival',
-    description: 'Experience the best of Kenyan cuisine and international wines.',
-    date: '2025-05-10',
-    location: 'Carnivore Gardens, Nairobi',
-    category: 'Food & Drinks',
-    featured: true,
-    price: 4000,
-    image:
-      'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-  },
-  {
-    id: 4,
-    title: 'Art Exhibition',
-    description: 'Showcasing contemporary African art from emerging artists.',
-    date: '2025-06-01',
-    location: 'National Museums of Kenya, Nairobi',
-    category: 'Art & Culture',
-    featured: false,
-    price: 1500,
-    image:
-      'https://images.unsplash.com/photo-1580136579312-94651dfd596d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-  },
-  {
-    id: 5,
-    title: 'Marathon for Charity',
-    description: 'Annual marathon supporting education initiatives in Kenya.',
-    date: '2025-07-15',
-    location: 'Ngong Road, Nairobi',
-    category: 'Sports',
-    featured: true,
-    price: 2000,
-    image:
-      'https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-  },
-  {
-    id: 6,
-    title: 'Business Summit',
-    description: 'Connecting entrepreneurs and investors in East Africa.',
-    date: '2025-08-20',
-    location: 'Radisson Blu, Nairobi',
-    category: 'Business',
-    featured: false,
-    price: 5000,
-    image:
-      'https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-  },
-];
 
 function Events() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -87,6 +10,14 @@ function Events() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [eventsData, setEventsData] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/events')
+      .then(response => response.json())
+      .then(data => setEventsData(data))
+      .catch(error => console.error('Error fetching events:', error));
+  }, []);
 
   const filteredEvents = eventsData.filter((event) => {
     return (
