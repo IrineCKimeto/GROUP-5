@@ -11,14 +11,17 @@ from models import User, Event, Ticket, Payment
 # Load environment variables from .env file
 load_dotenv()
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DATABASE = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
+SECRET_KEY = os.getenv("SECRET_KEY", "your-default-secret-key")
 # Create an instance of the Flask application
 app = Flask(__name__)
 
 # Configure the app
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "your-default-secret-key")
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE
+app.config["SECRET_KEY"] = SECRET_KEY
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
-
+app.json.compact = False
 # Initialize extensions
 bcrypt.init_app(app)
 jwt.init_app(app)
