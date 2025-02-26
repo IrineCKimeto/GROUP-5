@@ -11,11 +11,11 @@ class User(db.Model):
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
     date = db.Column(db.Date, nullable=False)
-    location = db.Column(db.String(100), nullable=False)
-    category = db.Column(db.String(50), nullable=False)
+    location = db.Column(db.String(255), nullable=False)
+    category = db.Column(db.String(255), nullable=False) 
     featured = db.Column(db.Boolean, default=False)
     ticket_price = db.Column(db.Float, nullable=False)
     available_tickets = db.Column(db.Integer, nullable=False)
