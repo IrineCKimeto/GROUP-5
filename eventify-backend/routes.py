@@ -20,10 +20,13 @@ def home():
 @routes.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
+    if not data.get("name") or not data.get("email") or not data.get("password"):
+        return jsonify({"error": "Missing required fields"}), 400
     hashed_password = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
     if User.query.filter_by(email=data["email"]).first():
         return jsonify({"error": "Email already registered"}), 400
-    user = User(name=data["name"], email=data["email"], password=hashed_password, role=data.get("role", "user"))
+    role = data.get("role", "user") 
+    user = User(name=data["name"], email=data["email"], password=hashed_password, role=role)
     db.session.add(user)
     db.session.commit()
     return jsonify({"message": "User created successfully"}), 201
@@ -31,6 +34,8 @@ def signup():
 @routes.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
+    if not data.get("email") or not data.get("password"):
+        return jsonify({"error": "Missing required fields"}), 400
     user = User.query.filter_by(email=data["email"]).first()
     if user and bcrypt.check_password_hash(user.password, data["password"]):
         access_token, refresh_token = create_tokens(user)
@@ -38,7 +43,6 @@ def login():
     return jsonify({"message": "Incorrect email or password"}), 401
 
 @routes.route("/refresh", methods=["POST"])
-@jwt_required(refresh=True)
 def refresh():
     current_user = json.loads(get_jwt_identity())
     new_access_token = create_access_token(identity=current_user, fresh=False)
@@ -54,7 +58,6 @@ def get_users():
     return jsonify([{"id": u.id, "name": u.name, "email": u.email, "role": u.role} for u in users])
 
 @routes.route("/events", methods=["GET"])
-@jwt_required()
 def get_events():
     events = Event.query.all()
     return jsonify([{
@@ -66,7 +69,6 @@ def get_events():
         "ticket_price": e.ticket_price,
         "available_tickets": e.available_tickets
     } for e in events])
-
 
 @routes.route("/events", methods=["POST"])
 @jwt_required()
@@ -99,6 +101,8 @@ def update_event(event_id):
     if not event:
         return jsonify({"error": "Event not found"}), 404
     data = request.get_json()
+    if not data.get("title") or not data.get("location") or not data.get("ticket_price"):
+        return jsonify({"error": "Missing required fields"}), 400
     event.title = data.get("title", event.title)
     event.description = data.get("description", event.description)
     event.date = data.get("date", event.date)
@@ -119,7 +123,7 @@ def delete_event(event_id):
         return jsonify({"error": "Event not found"}), 404
     db.session.delete(event)
     db.session.commit()
-    return jsonify({"message": "Event deleted successfully"})
+    return jsonify({"message": "Event deleted successfully"})
 
 @routes.route("/tickets", methods=["GET"])
 @jwt_required()
@@ -139,6 +143,8 @@ def get_tickets():
 def create_ticket():
     current_user = json.loads(get_jwt_identity())
     data = request.get_json()
+    if not data.get("event_id"):
+        return jsonify({"error": "Missing required fields"}), 400
     event = Event.query.get_or_404(data["event_id"])
     if event.available_tickets < 1:
         return jsonify({"message": "No tickets available"}), 400
