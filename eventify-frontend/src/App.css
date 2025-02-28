@@ -1,4 +1,10 @@
-/* nav {
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Navigation styling */
+nav {
   background-color: #333;
   padding: 10px;
 }
@@ -10,20 +16,22 @@ nav ul {
   gap: 20px;
   padding: 0;
 }
-nav ul li{
+
+nav ul li {
   display: inline;
 }
 
-nav ul li a{
+nav ul li a {
   text-decoration: none;
   color: wheat;
   font-weight: bold;
 }
 
-nav ul li a:hover{
-  color:rgb(161, 210, 206);
+nav ul li a:hover {
+  color: rgb(161, 210, 206);
 }
 
+/* Authentication form styling */
 .auth-container {
   display: flex;
   justify-content: center;
@@ -31,6 +39,7 @@ nav ul li a:hover{
   height: 100vh;
   background-color: whitesmoke;
 }
+
 .auth-form {
   background: beige;
   padding: 2rem;
@@ -62,6 +71,7 @@ nav ul li a:hover{
 .auth-form button:hover {
   background-color: #0056b3;
 }
+
 .auth-form a {
   display: block;
   margin-top: 10px;
@@ -72,6 +82,7 @@ nav ul li a:hover{
 .auth-form a:hover {
   text-decoration: underline;
 }
+
 .show-password-container {
   display: flex;
   align-items: center;
@@ -83,9 +94,10 @@ nav ul li a:hover{
   margin-right: 10px;
   width: 14px;
   height: 14px;
-  margin: 20;
+  margin: 0; 
 }
 
+/* About page styling */
 .about-container {
   max-width: 800px;
   margin: auto;
@@ -120,6 +132,7 @@ nav ul li a:hover{
   border-radius: 10px;
 }
 
+/* Footer styling */
 .footer {
   margin-top: 20px;
   padding: 20px;
@@ -129,7 +142,7 @@ nav ul li a:hover{
 
 .social-links {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   gap: 15px;
   margin-top: 10px;
 }
@@ -145,7 +158,27 @@ nav ul li a:hover{
 
 .social-links a:hover {
   color: #007bff;
-} */
-@tailwind base;
-@tailwind components;
-@tailwind utilities; 
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .text-4xl {
+    font-size: 1.75rem;
+  }
+ 
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+ 
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+ 
+  body {
+    padding-top: 60px;
+  }
+ 
+  .overflow-hidden-mobile {
+    overflow-x: hidden;
+  }
+}

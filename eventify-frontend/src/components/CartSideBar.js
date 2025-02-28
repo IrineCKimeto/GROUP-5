@@ -27,7 +27,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
     <>
       <button
         onClick={toggleSidebar}
-        className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors relative"
+        className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors"
       >
         {isOpen ? "Close Cart" : "Open Cart"}
         {cartItems.length > 0 && (
@@ -37,7 +37,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
         )}
       </button>
       {isOpen && (
-        <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-lg z-50 p-6 overflow-y-auto">
+        <div className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg z-50 p-4 sm:p-6 overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Cart</h2>
             <button

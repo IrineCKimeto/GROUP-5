@@ -125,12 +125,12 @@ function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-indigo-500 to-purple-700 text-white py-16">
+      <section className="bg-gradient-to-r from-indigo-500 to-purple-700 text-white py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-6xl font-serif font-extrabold mb-4">
+          <h1 className="text-4xl sm:text-6xl font-serif font-extrabold mb-4">
             Elevate Your Event Experience
           </h1>
-          <p className="text-xl font-light mb-8">
+          <p className="text-lg sm:text-xl font-light mb-8">
             Where every moment matters. Experience events like never before.
           </p>
         </div>

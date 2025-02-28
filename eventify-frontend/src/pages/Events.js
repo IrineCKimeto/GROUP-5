@@ -144,7 +144,7 @@ function Events() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
               {searchTerm || selectedCategory ? 'Search Results' : 'All Events'}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEvents.map((event) => (
                 <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                   <div className="p-4">
@@ -179,7 +179,7 @@ function Events() {
           </div>
 
           {/* Categories Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 mt-6 lg:mt-0">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24">
               <h2 className="text-xl font-bold text-gray-900 mb-6 flex justify-between items-center">
                 Popular Categories
