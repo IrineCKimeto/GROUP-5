@@ -18,19 +18,19 @@ function EventDetailsModal({ event, onClose }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h3 className="font-semibold text-gray-700">Date & Time</h3>
-              <p>{event.date}</p>
+              <p>{new Date(event.date).toLocaleString()}</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-700">Location</h3>
               <p>{event.location}</p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-700">Category</h3>
-              <p>{event.category}</p>
+              <h3 className="font-semibold text-gray-700">Available Tickets</h3>
+              <p>{event.available_tickets}</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-700">Price</h3>
-              <p>KES {event.price}</p>
+              <p>KES {event.ticket_price.toFixed(2)}</p>
             </div>
           </div>
         </div>
