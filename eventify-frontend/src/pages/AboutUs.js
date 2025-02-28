@@ -27,7 +27,7 @@ const AboutUs = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <div className="relative h-[500px] overflow-hidden">
+      <div className="relative h-[300px] sm:h-[500px] overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3"
