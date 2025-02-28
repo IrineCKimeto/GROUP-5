@@ -9,21 +9,38 @@ function Events() {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [cartItems, setCartItems] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [eventsData, setEventsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://group-5-new.onrender.com/events')
-      .then(response => response.json())
-      .then(data => setEventsData(data))
-      .catch(error => console.error('Error fetching events:', error));
+    fetchEvents();
   }, []);
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('https://group-5-new.onrender.com/events');
+      if (!response.ok) {
+        throw new Error('Failed to fetch events');
+      }
+      const data = await response.json();
+      setEventsData(data);
+      setError(null);
+    } catch (err) {
+      setError('Error loading events. Please try again later.');
+      console.error('Error fetching events:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredEvents = eventsData.filter((event) => {
     return (
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedCategory ? event.category === selectedCategory : true) &&
-      (selectedDateRange ? event.date === selectedDateRange : true) &&
+      (selectedDateRange ? event.date.includes(selectedDateRange) : true) &&
       (selectedLocation ? event.location === selectedLocation : true)
     );
   });
@@ -39,25 +56,25 @@ function Events() {
     } else {
       setCartItems([...cartItems, { ...event, quantity: 1 }]);
     }
+    setSidebarOpen(true);
   };
 
-  const handleRemoveFromCart = (event) => {
-    const existingItem = cartItems.find((item) => item.id === event.id);
-    if (existingItem.quantity === 1) {
-      setCartItems(cartItems.filter((item) => item.id !== event.id));
-    } else {
-      setCartItems(
-        cartItems.map((item) =>
-          item.id === event.id ? { ...item, quantity: item.quantity - 1 } : item
-        )
-      );
-    }
+  const handleRemoveFromCart = (itemId) => {
+    setCartItems(cartItems.filter(item => item.id !== itemId));
   };
 
   const handleCheckout = () => {
     // Implement checkout logic here
     console.log('Checking out with items:', cartItems);
   };
+
+  if (loading) {
+    return <div className="text-center py-10">Loading events...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-10 text-red-600">{error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
@@ -129,79 +146,32 @@ function Events() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEvents.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl"
-                >
-                  <div className="relative">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="w-full h-48 object-cover"
-                    />
-                    <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      {event.category}
+                <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="p-4">
+                    <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                    <p className="text-gray-600 mb-2">{event.description}</p>
+                    <div className="text-sm text-gray-500 space-y-2">
+                      <p>
+                        <span className="font-semibold">Location:</span> {event.location}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Date:</span> {new Date(event.date).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Available Tickets:</span> {event.available_tickets}
+                      </p>
                     </div>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      {event.title}
-                    </h3>
-                    <div className="flex items-center text-gray-600 text-sm mb-2">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                      {event.date}
-                    </div>
-                    <div className="flex items-center text-gray-600 text-sm mb-4">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      {event.location}
-                    </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex justify-between items-center mt-4">
                       <span className="text-blue-600 font-bold">
-                        KES {event.price.toLocaleString()}
+                        KES {event.ticket_price.toFixed(2)}
                       </span>
                       <button
                         onClick={() => handleAddToCart(event)}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                       >
-                        Add to Cart
+                        Book Now
                       </button>
                     </div>
-                    <button
-                      onClick={() => setSelectedEvent(event)}
-                      className="mt-4 w-full bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-                    >
-                      View Details
-                    </button>
                   </div>
                 </div>
               ))}
@@ -267,9 +237,14 @@ function Events() {
       )}
 
       <CartSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
         cartItems={cartItems}
         onRemove={handleRemoveFromCart}
-        onCheckout={handleCheckout}
+        onCheckout={() => {
+          setCartItems([]);
+          setSidebarOpen(false);
+        }}
       />
     </div>
   );

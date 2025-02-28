@@ -5,7 +5,8 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalAmount = cartItems.reduce((total, item) => 
+    total + (item.ticket_price || 0) * item.quantity, 0);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -13,14 +14,12 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
 
   const handlePayment = (e) => {
     e.preventDefault();
-    // Here you would integrate with your payment API
     console.log("Processing payment:", {
       method: paymentMethod,
       phoneNumber,
       totalAmount,
       items: cartItems.map((item) => item.title),
     });
-    // Once payment is processed, call onCheckout (or clear the cart)
     onCheckout();
   };
 
@@ -59,11 +58,11 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
                   <li key={index} className="flex justify-between items-center">
                     <div>
                       <h3 className="text-lg font-semibold">{item.title}</h3>
-                      <p className="text-gray-600">KES {item.price.toLocaleString()}</p>
+                      <p className="text-gray-600">KES {item.ticket_price?.toLocaleString()}</p>
                       <p className="text-gray-600">Quantity: {item.quantity}</p>
                     </div>
                     <button
-                      onClick={() => onRemove(item)}
+                      onClick={() => onRemove(item.id)}
                       className="text-red-500 hover:text-red-700"
                     >
                       Remove

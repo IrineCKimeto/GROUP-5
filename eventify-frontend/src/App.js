@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import UserProfile from "./pages/UserProfile";
 import AdminEvents from './pages/AdminEvents';
 
+
 function App() {
   return (
     <Router>
@@ -24,6 +25,7 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/support" element={<Support />} />
             <Route path="/profile" element={<UserProfile />} />
+            
           </Routes>
         </main>
         <Footer />
