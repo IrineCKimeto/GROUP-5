@@ -15,6 +15,9 @@ psycopg2 = "*"
 python-dotenv = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
+Werkzeug = "*"
+SQLAlchemy = "*"
+requests = "*"
 
 [dev-packages]
 
