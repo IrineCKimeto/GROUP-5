@@ -13,7 +13,7 @@ function Events() {
   const [eventsData, setEventsData] = useState([]);
 
   useEffect(() => {
-    fetch('/api/events')
+    fetch('https://group-5-new.onrender.com/events')
       .then(response => response.json())
       .then(data => setEventsData(data))
       .catch(error => console.error('Error fetching events:', error));
