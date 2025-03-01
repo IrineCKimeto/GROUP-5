@@ -54,7 +54,6 @@ def get_users():
     return jsonify([{"id": u.id, "name": u.name, "email": u.email, "role": u.role} for u in users])
 
 @routes.route("/events", methods=["GET"])
-@jwt_required()
 def get_events():
     events = Event.query.all()
     return jsonify([{
@@ -116,12 +115,24 @@ def update_event(event_id):
     if not event:
         return jsonify({"error": "Event not found"}), 404
     data = request.get_json()
+    if not data.get("title") or not data.get("location") or not data.get("ticket_price") or not data.get("date"):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    try:
+        event_date = datetime.strptime(data["date"], "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use 'YYYY-MM-DD'"}), 400
+
     event.title = data.get("title", event.title)
     event.description = data.get("description", event.description)
-    event.date = data.get("date", event.date)
+    event.date = event_date
     event.location = data.get("location", event.location)
     event.ticket_price = data.get("ticket_price", event.ticket_price)
     event.available_tickets = data.get("available_tickets", event.available_tickets)
+    event.category = data.get("category", event.category)
+    event.featured = data.get("featured", event.featured)
+    event.image = data.get("image", event.image)
+
     db.session.commit()
     return jsonify({"message": "Event updated successfully"})
 
