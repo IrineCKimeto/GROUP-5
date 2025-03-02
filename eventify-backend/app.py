@@ -20,6 +20,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-default-secret-key")
 CONSUMER_KEY = os.getenv("CONSUMER_KEY", "default-consumer-key")
 CONSUMER_SECRET = os.getenv("CONSUMER_SECRET", "default-consumer-secret")
 BASE_URL = os.getenv("BASE_URL", "")
+shortcode = os.getenv("SHORTCODE", "default-shortcode")
+passkey = os.getenv("PASSKEY")
 
 # Create an instance of the Flask application
 app = Flask(__name__)
@@ -130,7 +132,7 @@ def mpesa_stk_push():
         return jsonify({"message": "Failed to get M-Pesa access token"}), 500
 
     timestamp = get_timestamp()
-    password = generate_password("174379", "bfb279f9a9dbcf158e97d71a467cd2e08c93059b1bf78e6b72adaled2c919", timestamp)
+    password = generate_password(shortcode, passkey, timestamp)
 
     payload = {
         "BusinessShortCode": "174379",
