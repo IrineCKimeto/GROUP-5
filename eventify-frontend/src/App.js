@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import Home from "./pages/Home"
 import SignIn from "./pages/SignIn"
 import Events from "./pages/Events"
@@ -10,6 +10,28 @@ import Footer from './components/Footer';
 import UserProfile from "./pages/UserProfile";
 import AdminEvents from './pages/AdminEvents';
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const user = localStorage.getItem("user");
+  
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+  
+  return children;
+};
+
+// Admin Route Component
+const AdminRoute = ({ children }) => {
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  
+  if (!user || user.role !== "admin") {
+    return <Navigate to="/signin" replace />;
+  }
+  
+  return children;
+};
 
 function App() {
   return (
@@ -20,12 +42,19 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/events" element={<Events />} />
-            <Route path="/admin/events" element={<AdminEvents />} />
+            <Route path="/admin/events" element={
+              <AdminRoute>
+                <AdminEvents />
+              </AdminRoute>
+            } />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/support" element={<Support />} />
-            <Route path="/profile" element={<UserProfile />} />
-            
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            } />
           </Routes>
         </main>
         <Footer />

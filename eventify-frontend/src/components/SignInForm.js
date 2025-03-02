@@ -17,20 +17,22 @@ const SignInForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch("http://localhost:3000/users");
       const users = await response.json();
-
+  
       // Find user by email and password
       const user = users.find(
         (u) => u.email === formData.email && u.password === formData.password
       );
-
+  
       if (user) {
         localStorage.setItem("user", JSON.stringify(user)); // Store user info
         window.dispatchEvent(new Event("userUpdated")); // Notify Navbar
-        navigate(user.role === "admin" ? "/admin/events" : "/events");
+        
+        // Redirect based on role - admins to admin events, regular users to profile
+        navigate(user.role === "admin" ? "/admin/events" : "/profile");
       } else {
         alert("Invalid email or password");
       }
