@@ -3,6 +3,9 @@
 ## Introduction
 Welcome to our project! This repository contains the code and documentation for our GROUP-5 project.
 
+## Deployed Link
+[Eventify-Backend](https://group-5-new.onrender.com/)
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
