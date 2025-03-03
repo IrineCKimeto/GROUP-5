@@ -90,11 +90,20 @@ function Navbar() {
               {user?.role === "admin" ? "Admin Events" : "Events"}
             </Link>
           </li>
-          <li>
-            <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-              About Us
-            </Link>
-          </li>
+          {user?.role === "admin" && (
+            <li>
+              <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                Manage Tickets
+              </Link>
+            </li>
+          )}
+          {user?.role !== "admin" && (
+            <li>
+              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                About Us
+              </Link>
+            </li>
+          )}
           <li>
             <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
               Support
@@ -161,11 +170,20 @@ function Navbar() {
                 {user?.role === "admin" ? "Admin Events" : "Events"}
               </Link>
             </li>
+            {user?.role === "admin" && (
             <li>
-              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
+              <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                Manage Tickets
+              </Link>
+            </li>
+          )}
+            {user?.role !== "admin" && (
+            <li>
+              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
                 About Us
               </Link>
             </li>
+          )}
             <li>
               <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                 Support
