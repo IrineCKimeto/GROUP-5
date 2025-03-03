@@ -18,26 +18,37 @@ const SignInForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    const endpoint = isRegister ? "/signup" : "/login";
+  
     try {
-      const response = await fetch("https://group-5-new.onrender.com/users");
-      const users = await response.json();
+      const response = await fetch(`https://group-5-new.onrender.com${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
   
-      // Find user by email and password
-      const user = users.find(
-        (u) => u.email === formData.email && u.password === formData.password
-      );
+      const data = await response.json();
   
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user)); // Store user info
-        window.dispatchEvent(new Event("userUpdated")); // Notify Navbar
-        
-        // Redirect based on role - admins to admin events, regular users to profile
-        navigate(user.role === "admin" ? "/admin/events" : "/profile");
+      if (!response.ok) {
+        alert(data.error || "An error occurred. Please try again.");
+        return;
+      }
+  
+      // If signing in, store token & user details
+      if (!isRegister) {
+        localStorage.setItem("accessToken", data.access_token);
+        localStorage.setItem("user", JSON.stringify({ email: formData.email, role: data.role }));
+  
+        window.dispatchEvent(new Event("userUpdated"));
+  
+        navigate(data.role === "admin" ? "/admin/events" : "/profile");
       } else {
-        alert("Invalid email or password");
+        alert("Account created successfully! Please log in.");
+        setIsRegister(false); // Switch back to login form
       }
     } catch (error) {
-      console.error("Error logging in:", error);
+      console.error("Error:", error);
+      alert("Server error. Try again later.");
     }
   };
 
