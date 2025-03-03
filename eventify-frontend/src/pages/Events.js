@@ -71,7 +71,7 @@ function Events() {
   };
 
   const handleRemoveFromCart = (itemId) => {
-    setCartItems(cartItems.filter(item => item.id !== itemId));
+    setCartItems(cartItems.filter((item) => item.id !== itemId));
   };
 
   const handleCheckout = () => {
@@ -83,46 +83,62 @@ function Events() {
     console.log('Checking out with items:', cartItems);
   };
 
-  if (loading) {
-    return <div className="text-center py-10">Loading events...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-10 text-red-600">{error}</div>;
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      {/* Hero Section */}
-      <div className="relative bg-gray-900 text-white py-20">
-        <div className="absolute inset-0 overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30"
-            alt="Events Cover"
-            className="w-full h-full object-cover opacity-30"
-          />
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
+          <div className="text-2xl font-bold text-gray-800">Eventify</div>
+          <nav>
+            <ul className="flex space-x-6">
+              <li>
+                <a href="/" className="text-gray-600 hover:text-gray-900">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="/events" className="text-gray-600 hover:text-gray-900">
+                  Events
+                </a>
+              </li>
+              <li>
+                <a href="/about" className="text-gray-600 hover:text-gray-900">
+                  About
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative">
+        <img
+          src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30"
+          alt="Events Cover"
+          className="w-full h-64 object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500 opacity-75"></div>
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white drop-shadow-lg">
             Discover Amazing Events
           </h1>
-          <p className="text-xl text-center text-gray-300 mb-8">
+          <p className="mt-4 text-lg sm:text-xl text-gray-200">
             Find and book the best events in Kenya
           </p>
-
-          {/* Search and Filter Section */}
-          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Search and Filter */}
+          <div className="mt-6 w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <input
               type="text"
               placeholder="Search events..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/90 text-gray-900"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <select
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/90 text-gray-900"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <option value="">All Categories</option>
               <option value="Music">Music</option>
@@ -136,12 +152,12 @@ function Events() {
               type="date"
               value={selectedDateRange}
               onChange={(e) => setSelectedDateRange(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/90 text-gray-900"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <select
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/90 text-gray-900"
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <option value="">All Locations</option>
               <option value="Nairobi">Nairobi</option>
@@ -150,53 +166,75 @@ function Events() {
             </select>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Events Grid */}
           <div className="lg:col-span-3">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
               {searchTerm || selectedCategory ? 'Search Results' : 'All Events'}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredEvents.map((event) => (
-                <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <div className="p-4">
-                    <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                    <p className="text-gray-600 mb-2">{event.description}</p>
-                    <div className="text-sm text-gray-500 space-y-2">
-                      <p>
-                        <span className="font-semibold">Location:</span> {event.location}
+            {loading ? (
+              <div className="text-center py-10">Loading events...</div>
+            ) : error ? (
+              <div className="text-center py-10 text-red-600">{error}</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
+                  >
+                    <img
+                      src={event.image || 'https://via.placeholder.com/400x200'}
+                      alt={event.title}
+                      className="w-full h-40 object-cover"
+                    />
+                    <div className="p-4">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                        {event.title}
+                      </h3>
+                      <p className="text-gray-600 mb-2 text-sm line-clamp-2">
+                        {event.description}
                       </p>
-                      <p>
-                        <span className="font-semibold">Date:</span> {new Date(event.date).toLocaleDateString()}
-                      </p>
-                      <p>
-                        <span className="font-semibold">Available Tickets:</span> {event.available_tickets}
-                      </p>
-                    </div>
-                    <div className="flex justify-between items-center mt-4">
-                      <span className="text-blue-600 font-bold">
-                        KES {event.ticket_price.toFixed(2)}
-                      </span>
-                      <button
-                        onClick={() => handleAddToCart(event)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                      >
-                        Book Now
-                      </button>
+                      <div className="text-sm text-gray-500 mb-2">
+                        <p>
+                          <span className="font-medium">Location:</span>{' '}
+                          {event.location}
+                        </p>
+                        <p>
+                          <span className="font-medium">Date:</span>{' '}
+                          {new Date(event.date).toLocaleDateString()}
+                        </p>
+                        <p>
+                          <span className="font-medium">Tickets:</span>{' '}
+                          {event.available_tickets}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center mt-4">
+                        <span className="text-blue-600 font-bold text-lg">
+                          KES {event.ticket_price.toFixed(2)}
+                        </span>
+                        <button
+                          onClick={() => handleAddToCart(event)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-300"
+                        >
+                          Book Now
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Categories Sidebar */}
-          <div className="lg:col-span-1 mt-6 lg:mt-0">
+          <aside className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex justify-between items-center">
                 Popular Categories
                 <button
                   onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -212,10 +250,10 @@ function Events() {
                       <button
                         key={category}
                         onClick={() => setSelectedCategory(category)}
-                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 ${
+                        className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-300 ${
                           selectedCategory === category
                             ? 'bg-blue-500 text-white'
-                            : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
                         <div className="flex items-center">
@@ -226,9 +264,8 @@ function Events() {
                             <div className="font-semibold">{category}</div>
                             <div className="text-sm opacity-75">
                               {
-                                filteredEvents.filter(
-                                  (e) => e.category === category
-                                ).length
+                                filteredEvents.filter((e) => e.category === category)
+                                  .length
                               }{' '}
                               events
                             </div>
@@ -240,9 +277,9 @@ function Events() {
                 </div>
               )}
             </div>
-          </div>
+          </aside>
         </div>
-      </div>
+      </main>
 
       {selectedEvent && (
         <EventDetailsModal
@@ -251,6 +288,7 @@ function Events() {
         />
       )}
 
+      {/* The CartSidebar component includes a fixed floating button at the bottom-right */}
       <CartSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}

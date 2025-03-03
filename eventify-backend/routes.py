@@ -17,6 +17,12 @@ def create_tokens(user):
 def home():
     return jsonify({"message": "Welcome to Eventify API"}), 200
 
+@routes.route("/verify-token", methods=["POST"])
+@jwt_required()
+def verify_token():
+    return jsonify({"valid": True}), 200
+
+
 @routes.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
