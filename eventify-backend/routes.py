@@ -64,6 +64,8 @@ def get_events():
         "location": e.location,
         "ticket_price": e.ticket_price,
         "available_tickets": e.available_tickets,
+        "featured": e.featured,
+        "category": e.category,
         "image": e.image
     } for e in events])
 
