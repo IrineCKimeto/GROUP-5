@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 function CartSidebar({ cartItems, onRemove, onCheckout }) {
   const [isOpen, setIsOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const totalAmount = cartItems.reduce((total, item) => 
     total + (item.ticket_price || 0) * item.quantity, 0);
@@ -12,15 +23,46 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
     setIsOpen(!isOpen);
   };
 
-  const handlePayment = (e) => {
+  const handlePayment = async (e) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
     console.log("Processing payment:", {
       method: paymentMethod,
       phoneNumber,
       totalAmount,
       items: cartItems.map((item) => item.title),
     });
-    onCheckout();
+
+    try {
+      const response = await fetch("https://group-5-new.onrender.com/tickets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          method: paymentMethod,
+          phoneNumber,
+          totalAmount,
+          items: cartItems.map((item) => ({
+            event_id: item.id,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to process payment");
+      }
+
+      const result = await response.json();
+      console.log("Payment successful:", result);
+      onCheckout();
+    } catch (error) {
+      console.error("Payment error:", error);
+    }
   };
 
   return (
