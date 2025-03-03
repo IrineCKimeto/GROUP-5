@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import UserProfile from "./pages/UserProfile";
 import AdminEvents from './pages/AdminEvents';
+import AdminTickets from './pages/AdminTickets';
 
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/support" element={<Support />} />
             <Route path="/profile" element={<UserProfile />} />
-            
+            <Route path="/admin/tickets" element={<AdminTickets />} />
           </Routes>
         </main>
         <Footer />
