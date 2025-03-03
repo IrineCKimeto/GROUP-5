@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function CartSidebar({ cartItems, onRemove, onCheckout }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,14 +10,32 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
 
   useEffect(() => {
     // Check if user is logged in
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (token) {
-      setIsLoggedIn(true);
+      // Verify token validity
+      fetch("https://group-5-new.onrender.com/verify-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.valid) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      })
+      .catch(() => setIsLoggedIn(false));
     }
   }, []);
 
-  const totalAmount = cartItems.reduce((total, item) => 
-    total + (item.ticket_price || 0) * item.quantity, 0);
+  const totalAmount = cartItems.reduce(
+    (total, item) => total + (item.ticket_price || 0) * item.quantity,
+    0
+  );
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -25,38 +43,32 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
 
   const handlePayment = async (e) => {
     e.preventDefault();
-    if (!isLoggedIn) {
-      navigate('/login');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   navigate("/login");
+    //   return;
+    // }
     console.log("Processing payment:", {
-      method: paymentMethod,
+      paymentMethod,
       phoneNumber,
       totalAmount,
-      items: cartItems.map((item) => item.title),
     });
-
+  
     try {
-      const response = await fetch("https://group-5-new.onrender.com/tickets", {
+      const response = await fetch("https://group-5-new.onrender.com/mpesa/stk-push", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          method: paymentMethod,
-          phoneNumber,
-          totalAmount,
-          items: cartItems.map((item) => ({
-            event_id: item.id,
-            quantity: item.quantity,
-          })),
+          phone_number: phoneNumber, 
+          amount: totalAmount,      
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to process payment");
       }
-
+  
       const result = await response.json();
       console.log("Payment successful:", result);
       onCheckout();
@@ -64,44 +76,73 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
       console.error("Payment error:", error);
     }
   };
-
+  
   return (
     <>
+      {/* Floating Cart Button Positioned in the Middle-Right of the Page */}
       <button
         onClick={toggleSidebar}
-        className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors"
+        className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
       >
-        {isOpen ? "Close Cart" : "Open Cart"}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 7H17m-10 0a1 1 0 102 0 1 1 0 00-2 0m8 0a1 1 0 102 0 1 1 0 00-2 0"
+          />
+        </svg>
         {cartItems.length > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+          <span className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full text-xs w-6 h-6 flex items-center justify-center">
             {cartItems.length}
           </span>
         )}
       </button>
-      {isOpen && (
-        <div className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg z-50 p-4 sm:p-6 overflow-y-auto">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Cart</h2>
-            <button
-              onClick={toggleSidebar}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+
+      {/* Sliding Cart Sidebar */}
+      <div
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="p-6 flex flex-col h-full">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Your Cart</h2>
+            <button onClick={toggleSidebar} className="text-gray-500 hover:text-gray-700">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
           {cartItems.length === 0 ? (
-            <p className="text-gray-600">Your cart is empty.</p>
+            <p className="text-gray-600 flex-grow">Your cart is empty.</p>
           ) : (
-            <>
+            <div className="flex flex-col flex-grow">
               <ul className="space-y-4">
                 {cartItems.map((item, index) => (
-                  <li key={index} className="flex justify-between items-center">
+                  <li key={index} className="flex justify-between items-center border-b pb-2">
                     <div>
                       <h3 className="text-lg font-semibold">{item.title}</h3>
-                      <p className="text-gray-600">KES {item.ticket_price?.toLocaleString()}</p>
-                      <p className="text-gray-600">Quantity: {item.quantity}</p>
+                      <p className="text-gray-600">
+                        KES {item.ticket_price?.toLocaleString()}
+                      </p>
+                      <p className="text-gray-600">Qty: {item.quantity}</p>
                     </div>
                     <button
                       onClick={() => onRemove(item.id)}
@@ -127,7 +168,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
                     <select
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="mpesa">M-Pesa</option>
                       <option value="card">Credit/Debit Card</option>
@@ -143,7 +184,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder="254700000000"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   )}
@@ -155,10 +196,10 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
                   </button>
                 </form>
               </div>
-            </>
+            </div>
           )}
         </div>
-      )}
+      </div>
     </>
   );
 }
