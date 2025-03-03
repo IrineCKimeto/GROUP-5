@@ -1,4 +1,5 @@
 // src/components/Navbar.js
+
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logo from "../logo/eventify-logo.png";
@@ -61,20 +62,6 @@ function Navbar() {
           </button>
         </div>
 
-        {/* Desktop Search Bar - Hidden on Mobile */}
-        <div className="hidden md:block relative w-96 mx-4">
-          <input
-            type="text"
-            placeholder="Search Eventify"
-            className="w-full px-4 py-2 rounded-full border border-gray-600 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-          />
-          <button className="absolute right-3 top-1/2 -translate-y-1/2">
-            <svg className="w-5 h-5 text-gray-400 hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </button>
-        </div>
-
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center space-x-8">
           <li>
@@ -90,11 +77,14 @@ function Navbar() {
               {user?.role === "admin" ? "Admin Events" : "Events"}
             </Link>
           </li>
-          <li>
-            <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-              About Us
-            </Link>
-          </li>
+          {/* Render About Us link only for non-admin users */}
+          {user?.role !== "admin" && (
+            <li>
+              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                About Us
+              </Link>
+            </li>
+          )}
           <li>
             <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
               Support
@@ -133,20 +123,6 @@ function Navbar() {
       {/* Mobile Menu - Slide Down */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-gray-800 px-4 py-2 shadow-lg absolute left-0 right-0 z-50">
-          {/* Mobile Search */}
-          <div className="mb-4 relative">
-            <input
-              type="text"
-              placeholder="Search Eventify"
-              className="w-full px-4 py-2 rounded-full border border-gray-600 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-            />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2">
-              <svg className="w-5 h-5 text-gray-400 hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-          </div>
-          
           <ul className="flex flex-col space-y-3">
             <li>
               <Link to="/" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
@@ -161,17 +137,19 @@ function Navbar() {
                 {user?.role === "admin" ? "Admin Events" : "Events"}
               </Link>
             </li>
-            <li>
-              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
-                About Us
-              </Link>
-            </li>
+            {/* Render About Us link only for non-admin users */}
+            {user?.role !== "admin" && (
+              <li>
+                <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
+                  About Us
+                </Link>
+              </li>
+            )}
             <li>
               <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                 Support
               </Link>
             </li>
-            {/* Mobile Profile and Notifications - Only show when logged in */}
             {user ? (
               <>
                 <li>
