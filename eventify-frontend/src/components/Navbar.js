@@ -30,7 +30,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-gray-800 px-4 py-3 z-50 relative">
+    <nav className="fixed top-0 left-0 right-0 bg-gray-800 px-4 py-3 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         {/* Logo with Text */}
         <Link to="/" className="flex items-center space-x-3 group">
@@ -100,28 +100,33 @@ function Navbar() {
               Support
             </Link>
           </li>
-          <li>
-            <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-              Profile
-            </Link>
-          </li>
-          <li>
-            <NotificationsIcon />
-          </li>
-          <li>
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors duration-200"
-              >
-                Logout
-              </button>
-            ) : (
+          {/* Move Profile and Notifications to appear only for logged in users */}
+          {user ? (
+            <>
+              <li>
+                <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <NotificationsIcon />
+              </li>
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors duration-200"
+                >
+                  Logout
+                </button>
+              </li>
+            </>
+          ) : (
+            <li>
               <Link to="/signin" className="px-4 py-2 rounded-lg bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-colors duration-200">
                 Sign In
               </Link>
-            )}
-          </li>
+            </li>
+          )}
         </ul>
       </div>
 
@@ -166,31 +171,36 @@ function Navbar() {
                 Support
               </Link>
             </li>
-            <li>
-              <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
-                Profile
-              </Link>
-            </li>
-            <li className="py-2">
-              <div className="flex items-center">
-                <span className="text-gray-200 mr-2">Notifications</span>
-                <NotificationsIcon />
-              </div>
-            </li>
-            <li className="py-2">
-              {user ? (
-                <button
-                  onClick={handleLogout}
-                  className="w-full px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors duration-200"
-                >
-                  Logout
-                </button>
-              ) : (
+            {/* Mobile Profile and Notifications - Only show when logged in */}
+            {user ? (
+              <>
+                <li>
+                  <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
+                    Profile
+                  </Link>
+                </li>
+                <li className="py-2">
+                  <div className="flex items-center">
+                    <span className="text-gray-200 mr-2">Notifications</span>
+                    <NotificationsIcon />
+                  </div>
+                </li>
+                <li className="py-2">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li className="py-2">
                 <Link to="/signin" className="w-full block text-center px-4 py-2 rounded-lg bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-colors duration-200">
                   Sign In
                 </Link>
-              )}
-            </li>
+              </li>
+            )}
           </ul>
         </div>
       )}
@@ -199,4 +209,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
