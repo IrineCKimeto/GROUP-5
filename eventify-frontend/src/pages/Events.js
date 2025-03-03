@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EventDetailsModal from '../components/EventDetailsModal';
 import CartSidebar from '../components/CartSideBar';
+import { useNavigate } from 'react-router-dom';
 
 function Events() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,9 +14,19 @@ function Events() {
   const [eventsData, setEventsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
   }, []);
 
   const fetchEvents = async () => {
@@ -64,6 +75,10 @@ function Events() {
   };
 
   const handleCheckout = () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
     // Implement checkout logic here
     console.log('Checking out with items:', cartItems);
   };
@@ -241,10 +256,7 @@ function Events() {
         onClose={() => setSidebarOpen(false)}
         cartItems={cartItems}
         onRemove={handleRemoveFromCart}
-        onCheckout={() => {
-          setCartItems([]);
-          setSidebarOpen(false);
-        }}
+        onCheckout={handleCheckout}
       />
     </div>
   );
