@@ -84,33 +84,7 @@ function Events() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
-          <div className="text-2xl font-bold text-gray-800">Eventify</div>
-          <nav>
-            <ul className="flex space-x-6">
-              <li>
-                <a href="/" className="text-gray-600 hover:text-gray-900">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="/events" className="text-gray-600 hover:text-gray-900">
-                  Events
-                </a>
-              </li>
-              <li>
-                <a href="/about" className="text-gray-600 hover:text-gray-900">
-                  About
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-gray-100 pt-16">
       {/* Hero Section */}
       <section className="relative">
         <img
