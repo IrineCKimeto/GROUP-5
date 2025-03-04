@@ -129,7 +129,7 @@ def mpesa_stk_push():
 
     access_token = get_access_token()
     if not access_token:
-        return jsonify({"message": "Failed to get M-Pesa access token"}), 500
+        return jsonify({"message": "Payment failed. Failed to process payment: M-Pesa access token issue. Please try again later."}), 500
 
     timestamp = get_timestamp()
     password = generate_password(shortcode, passkey, timestamp)
