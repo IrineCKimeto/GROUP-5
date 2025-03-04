@@ -78,7 +78,14 @@ function Navbar() {
               {user?.role === "admin" ? "Admin Events" : "Events"}
             </Link>
           </li>
-          {/* Render About Us link only for non-admin users */}
+
+          {user?.role === "admin" && (
+            <li>
+              <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                Manage Tickets
+              </Link>
+            </li>
+          )}
           {user?.role !== "admin" && (
             <li>
               <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
@@ -138,14 +145,27 @@ function Navbar() {
                 {user?.role === "admin" ? "Admin Events" : "Events"}
               </Link>
             </li>
-            {/* Render About Us link only for non-admin users */}
-            {user?.role !== "admin" && (
+              {user?.role !== "admin" && (
               <li>
                 <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                   About Us
                 </Link>
               </li>
             )}
+            {user?.role === "admin" && (
+            <li>
+              <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                Manage Tickets
+              </Link>
+            </li>
+          )}
+            {user?.role !== "admin" && (
+            <li>
+              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                About Us
+              </Link>
+            </li>
+          )}
             <li>
               <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                 Support
