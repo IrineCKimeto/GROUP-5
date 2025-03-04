@@ -44,7 +44,7 @@ def login():
     return jsonify({"message": "Incorrect email or password"}), 401
 
 @routes.route("/refresh", methods=["POST"])
-@jwt_required(refresh=True)
+
 def refresh():
     current_user = json.loads(get_jwt_identity())
     new_access_token = create_access_token(identity=current_user, fresh=False)
