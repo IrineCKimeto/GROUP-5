@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 
 const API_URL = "https://group-5-new.onrender.com/events";
+// const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTA3MTUzOCwianRpIjoiNTZhZTIzMDctYzFmZC00NWEyLWI2YzgtYWMyZThiNzMxZDA5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IntcImlkXCI6IDE1LCBcImVtYWlsXCI6IFwibW1tQGV4YW1wbGUuY29tXCIsIFwicm9sZVwiOiBcImFkbWluXCJ9IiwibmJmIjoxNzQxMDcxNTM4LCJjc3JmIjoiN2NlMTY5YjUtZmM2My00NTllLTgxZmItZDg1OTc1Y2YzZDg0IiwiZXhwIjoxNzQxMDcyNDM4fQ.ZhhCz-3FGVFwKeomruqkngSC5RwHpkofdMm32I-SQu8";
 
 function AdminEvents() {
   const [events, setEvents] = useState([]);
   const [form, setForm] = useState({
-    name: "",
+    title: "",
     description: "",
     date: "",
     location: "",
-    ticketPrice: "",
+    ticket_price: "",
     image: "",
-    type: "Upcoming", // Default selection
-    category: "Music", // Default selection
+    type: "Upcoming",
+    category: "Music",
   });
   const [editingId, setEditingId] = useState(null);
   const [expandedEvent, setExpandedEvent] = useState(null);
@@ -23,7 +24,11 @@ function AdminEvents() {
 
   const fetchEvents = async () => {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(API_URL, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       if (!res.ok) throw new Error(`Error fetching events: ${res.statusText}`);
       const data = await res.json();
       setEvents(data);
@@ -38,23 +43,53 @@ function AdminEvents() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    if (!form.title || !form.date || !form.location || !form.ticket_price) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+  
+    
+    
+
+    const eventData = {
+      title: form.title, // title instead of name
+      description: form.description,
+      date: form.date,
+      location: form.location,
+      ticket_price: parseFloat(form.ticket_price), // ensure ticket_price is a float
+      image: form.image,
+      category: form.category,
+      available_tickets: 50, // Default available tickets
+      featured: false, // Default featured status
+    };
+  
     try {
       const method = editingId ? "PUT" : "POST";
       const url = editingId ? `${API_URL}/${editingId}` : API_URL;
-
-      await fetch(url, {
+  
+      const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify(eventData),
       });
-
+  
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error('Error from API:', errorData);
+        throw new Error(`Error submitting event: ${res.statusText}`);
+      }
+  
       setEditingId(null);
       setForm({
-        name: "",
+        title: "",
         description: "",
         date: "",
         location: "",
-        ticketPrice: "",
+        ticket_price: "",
         image: "",
         type: "Upcoming",
         category: "Music",
@@ -64,14 +99,15 @@ function AdminEvents() {
       console.error("Error submitting event:", error);
     }
   };
+  
 
   const handleEdit = (event) => {
     setForm({
-      name: event.name,
+      title: event.title,
       description: event.description,
-      date: event.date,
+      date: event.date ? event.date.split("T")[0] : "",
       location: event.location,
-      ticketPrice: event.ticketPrice,
+      ticket_price: Number(event.ticket_price),
       image: event.image,
       type: event.type,
       category: event.category,
@@ -81,15 +117,20 @@ function AdminEvents() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       fetchEvents();
     } catch (error) {
       console.error("Error deleting event:", error);
     }
   };
 
-  const handleExpand = (eventId) => {
-    setExpandedEvent(expandedEvent === eventId ? null : eventId);
+  const handleExpand = (id) => {
+    setExpandedEvent(expandedEvent === id ? null : id);
   };
 
   return (
@@ -100,9 +141,9 @@ function AdminEvents() {
         <div className="space-y-2">
           <input
             type="text"
-            name="name"
+            name="title"
             placeholder="Event Name"
-            value={form.name}
+            value={form.title}
             onChange={handleChange}
             className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             required
@@ -126,9 +167,9 @@ function AdminEvents() {
           />
           <input
             type="number"
-            name="ticketPrice"
+            name="ticket_price"
             placeholder="Ticket Price"
-            value={form.ticketPrice}
+            value={form.ticket_price || ""}
             onChange={handleChange}
             className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             required
@@ -151,7 +192,6 @@ function AdminEvents() {
             required
           ></textarea>
 
-          {/* Event Type Dropdown */}
           <select
             name="type"
             value={form.type}
@@ -162,7 +202,6 @@ function AdminEvents() {
             <option value="Featured">Featured</option>
           </select>
 
-          {/* Category Dropdown */}
           <select
             name="category"
             value={form.category}
@@ -186,14 +225,14 @@ function AdminEvents() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {events.map((event) => (
           <div key={event.id} className="bg-white shadow-lg rounded-lg overflow-hidden border-2 border-gray-200">
-            <img src={event.image} alt={event.name} className="w-full h-48 object-cover" />
+            <img src={event.image} alt={event.title} className="w-full h-48 object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-blue-800">{event.name}</h3>
+              <h3 className="text-xl font-semibold text-blue-800">{event.title}</h3>
               <p className="text-sm text-gray-500">Type: {event.type}</p>
               <p className="text-sm text-gray-500">Category: {event.category}</p>
               <p className="text-sm text-gray-500">Date: {new Date(event.date).toLocaleDateString()}</p>
               <p className="text-sm text-gray-500">Location: {event.location}</p>
-              <p className="text-sm text-gray-500">Ticket Price: ${event.ticketPrice}</p>
+              <p className="text-sm text-gray-500">Ticket Price: KSH{event.ticket_price}</p>
               <p className="text-sm text-gray-600">
                 {expandedEvent === event.id ? event.description : `${event.description.slice(0, 100)}...`}
                 <button onClick={() => handleExpand(event.id)} className="text-blue-600 hover:text-blue-800">

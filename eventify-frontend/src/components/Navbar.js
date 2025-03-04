@@ -24,6 +24,7 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
     setUser(null);
     window.dispatchEvent(new Event("userUpdated"));
     navigate("/signin");
