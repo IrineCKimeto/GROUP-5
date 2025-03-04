@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API_URL = "https://group-5-new.onrender.com/events";
+const API_URL = "https://46c4-102-166-191-208.ngrok-free.app/events";
 
 function AdminEvents() {
   const [events, setEvents] = useState([]);
