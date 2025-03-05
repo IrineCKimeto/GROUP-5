@@ -102,11 +102,6 @@ function Navbar() {
             </Link>
           </li>
 
-          <li>
-            <Link to="/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-              Tickets
-            </Link>
-          </li>
           {/* Move Profile and Notifications to appear only for logged in users */}
           {user ? (
             <ul>
