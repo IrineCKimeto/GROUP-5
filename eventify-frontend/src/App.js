@@ -64,10 +64,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/tickets" element={<Tickets />} />
-            <Route path="/tickets" element={<Tickets />} />
             <Route path="/admin/tickets" element={<AdminTickets />} />
-
-
           </Routes>
         </main>
         <Footer />
