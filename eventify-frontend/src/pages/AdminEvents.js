@@ -134,122 +134,173 @@ function AdminEvents() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-8 bg-white shadow-2xl rounded-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">Manage Events</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">
+            Manage Events
+          </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6 mb-8">
-        <div className="space-y-2">
-          <input
-            type="text"
-            name="title"
-            placeholder="Event Name"
-            value={form.title}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <input
-            type="date"
-            name="date"
-            value={form.date}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <input
-            type="text"
-            name="location"
-            placeholder="Event Location"
-            value={form.location}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <input
-            type="number"
-            name="ticket_price"
-            placeholder="Ticket Price"
-            value={form.ticket_price || ""}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <input
-            type="text"
-            name="image"
-            placeholder="Image URL"
-            value={form.image}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <textarea
-            name="description"
-            placeholder="Event Description"
-            value={form.description}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            required
-          ></textarea>
-
-          <select
-            name="type"
-            value={form.type}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="Upcoming">Upcoming</option>
-            <option value="Featured">Featured</option>
-          </select>
-
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="Music">Music</option>
-            <option value="Tech">Tech</option>
-            <option value="Sport">Sport</option>
-            <option value="Food">Food</option>
-            <option value="Art">Art</option>
-            <option value="Business">Business</option>
-          </select>
-        </div>
-
-        <button type="submit" className="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900">
-          {editingId ? "Update Event" : "Create Event"}
-        </button>
-      </form>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {events.map((event) => (
-          <div key={event.id} className="bg-white shadow-lg rounded-lg overflow-hidden border-2 border-gray-200">
-            <img src={event.image} alt={event.title} className="w-full h-48 object-cover" />
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-blue-800">{event.title}</h3>
-              <p className="text-sm text-gray-500">Type: {event.type}</p>
-              <p className="text-sm text-gray-500">Category: {event.category}</p>
-              <p className="text-sm text-gray-500">Date: {new Date(event.date).toLocaleDateString()}</p>
-              <p className="text-sm text-gray-500">Location: {event.location}</p>
-              <p className="text-sm text-gray-500">Ticket Price: KSH{event.ticket_price}</p>
-              <p className="text-sm text-gray-600">
-                {expandedEvent === event.id ? event.description : `${event.description.slice(0, 100)}...`}
-                <button onClick={() => handleExpand(event.id)} className="text-blue-600 hover:text-blue-800">
-                  {expandedEvent === event.id ? "Show Less" : "View More"}
-                </button>
-              </p>
+          {/* Event Form */}
+          <form onSubmit={handleSubmit} className="space-y-6 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Event Name"
+                  value={form.title}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                  required
+                />
+                <input
+                  type="date"
+                  name="date"
+                  value={form.date}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                  required
+                />
+                <input
+                  type="text"
+                  name="location"
+                  placeholder="Event Location"
+                  value={form.location}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                  required
+                />
+              </div>
+              <div className="space-y-4">
+                <input
+                  type="number"
+                  name="ticket_price"
+                  placeholder="Ticket Price (KSH)"
+                  value={form.ticket_price}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                  required
+                />
+                <input
+                  type="text"
+                  name="image"
+                  placeholder="Image URL"
+                  value={form.image}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                  required
+                />
+                <textarea
+                  name="description"
+                  placeholder="Event Description"
+                  value={form.description}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 h-24"
+                  required
+                />
+              </div>
             </div>
-            <div className="p-6 flex space-x-4">
-              <button onClick={() => handleEdit(event)} className="px-4 py-2 bg-yellow-600 text-white rounded-lg">
-                Edit
-              </button>
-              <button onClick={() => handleDelete(event.id)} className="px-4 py-2 bg-red-600 text-white rounded-lg">
-                Delete
-              </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <select
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white"
+              >
+                <option value="Upcoming">Upcoming</option>
+                <option value="Featured">Featured</option>
+              </select>
+
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white"
+              >
+                <option value="Music">Music</option>
+                <option value="Tech">Tech</option>
+                <option value="Sport">Sport</option>
+                <option value="Food">Food</option>
+                <option value="Art">Art</option>
+                <option value="Business">Business</option>
+              </select>
             </div>
+
+            <button
+              type="submit"
+              className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl"
+            >
+              {editingId ? "Update Event" : "Create Event"}
+            </button>
+          </form>
+
+          {/* Events Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {events.map((event) => (
+              <div
+                key={event.id}
+                className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {event.title}
+                  </h3>
+                  <div className="space-y-2 mb-4">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Type:</span> {event.type}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Category:</span> {event.category}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Date:</span>{" "}
+                      {new Date(event.date).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Location:</span> {event.location}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Price:</span> KSH{" "}
+                      {event.ticket_price}
+                    </p>
+                  </div>
+                  <p className="text-gray-700 mb-4">
+                    {expandedEvent === event.id
+                      ? event.description
+                      : `${event.description.slice(0, 100)}...`}
+                    <button
+                      onClick={() => handleExpand(event.id)}
+                      className="text-blue-600 hover:text-blue-800 ml-1 font-medium"
+                    >
+                      {expandedEvent === event.id ? "Show Less" : "Read More"}
+                    </button>
+                  </p>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => handleEdit(event)}
+                      className="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors duration-300"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(event.id)}
+                      className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-300"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

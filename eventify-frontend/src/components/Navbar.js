@@ -101,11 +101,13 @@ function Navbar() {
           {/* Move Profile and Notifications to appear only for logged in users */}
           {user ? (
             <>
-              <li>
-                <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-                  Profile
-                </Link>
-              </li>
+              {user.role !== "admin" && (
+                <li>
+                  <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                    Profile
+                  </Link>
+                </li>
+              )}
               <li>
                 <NotificationsIcon />
               </li>
@@ -173,11 +175,13 @@ function Navbar() {
             </li>
             {user ? (
               <>
-                <li>
-                  <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
-                    Profile
-                  </Link>
-                </li>
+                {user.role !== "admin" && (
+                  <li>
+                    <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
+                      Profile
+                    </Link>
+                  </li>
+                )}
                 <li className="py-2">
                   <div className="flex items-center">
                     <span className="text-gray-200 mr-2">Notifications</span>
