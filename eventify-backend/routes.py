@@ -22,7 +22,6 @@ def home():
 def verify_token():
     return jsonify({"valid": True}), 200
 
-
 @routes.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
@@ -59,6 +58,20 @@ def get_users():
     users = User.query.all()
     return jsonify([{"id": u.id, "name": u.name, "email": u.email, "role": u.role} for u in users])
 
+@routes.route("/user-details", methods=["GET"])
+@jwt_required()
+def get_user_details():
+    current_user = json.loads(get_jwt_identity())
+    user = User.query.get(current_user["id"])
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+    return jsonify({
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "role": user.role
+    }), 200
+
 @routes.route("/events", methods=["GET"])
 def get_events():
     events = Event.query.all()
@@ -74,7 +87,6 @@ def get_events():
         "category": e.category,
         "image": e.image
     } for e in events])
-
 
 @routes.route("/events", methods=["POST"])
 @jwt_required()
@@ -201,3 +213,5 @@ def delete_ticket(ticket_id):
     db.session.delete(ticket)
     db.session.commit()
     return jsonify({"message": "Ticket deleted successfully"}), 200
+
+
