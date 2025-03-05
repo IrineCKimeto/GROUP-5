@@ -170,6 +170,21 @@ def mpesa_callback():
             mpesa_receipt_number = next(item['Value'] for item in callback_metadata if item['Name'] == 'MpesaReceiptNumber')
             phone_number = next(item['Value'] for item in callback_metadata if item['Name'] == 'PhoneNumber')
 
+            # Update ticket status in the database
+            ticket_id = data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value']  # Extract ticket ID from the payment details
+            user_id = data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value']  # Extract user ID from the payment details
+            event_id = data['Body']['stkCallback']['CallbackMetadata']['Item'][2]['Value']  # Extract event ID from the payment details
+            ticket = Ticket(event_id=event_id, user_id=user_id, status='confirmed')  # Create a new ticket
+
+
+            db.session.add(ticket)  # Add the ticket to the session
+            db.session.commit()  # Commit the changes to the database
+
+            ticket = Ticket.query.get(ticket_id)
+            if ticket:
+                ticket.status = 'paid'  # Update the ticket status
+                db.session.commit()  # Commit the changes to the database
+
             return jsonify({
                 "status": "success",
                 "amount": amount,
@@ -177,6 +192,7 @@ def mpesa_callback():
                 "phone": phone_number,
                 "message": "Payment received successfully"
             }), 200
+
         else:
             return jsonify({"status": "failed", "message": result_desc}), 400
 
