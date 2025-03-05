@@ -13,10 +13,15 @@ import AdminTickets from './pages/AdminTickets';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const user = localStorage.getItem("user");
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
   
   if (!user) {
     return <Navigate to="/signin" replace />;
+  }
+  
+  if (user.role === "admin") {
+    return <Navigate to="/admin/events" replace />;
   }
   
   return children;
@@ -51,13 +56,12 @@ function App() {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/support" element={<Support />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/admin/tickets" element={<AdminTickets />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfile />
               </ProtectedRoute>
             } />
+            <Route path="/admin/tickets" element={<AdminTickets />} />
           </Routes>
         </main>
         <Footer />
