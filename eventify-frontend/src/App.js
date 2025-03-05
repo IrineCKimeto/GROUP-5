@@ -1,11 +1,10 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import Home from "./pages/Home"
-import Tickets from "./pages/Tickets"
-
-import SignIn from "./pages/SignIn"
-import Events from "./pages/Events"
-import AboutUs from "./pages/AboutUs"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import Tickets from "./pages/Tickets";
+import SignIn from "./pages/SignIn";
+import Events from "./pages/Events";
+import AboutUs from "./pages/AboutUs";
 import Support from './pages/support';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -63,8 +62,16 @@ function App() {
                 <UserProfile />
               </ProtectedRoute>
             } />
-            <Route path="/tickets" element={<Tickets />} />
-            <Route path="/admin/tickets" element={<AdminTickets />} />
+            <Route path="/tickets" element={
+              <ProtectedRoute>
+                <Tickets />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/tickets" element={
+              <AdminRoute>
+                <AdminTickets />
+              </AdminRoute>
+            } />
           </Routes>
         </main>
         <Footer />
