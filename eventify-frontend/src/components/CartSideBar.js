@@ -91,9 +91,11 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
         }
       }
 
-      const result = await response.json();
+      const result = await response.json(); // Keep this line
       console.log("Payment successful:", result);
       onCheckout();
+      navigate("/tickets"); // Redirect to Tickets page
+
     } catch (error) {
       console.error("Payment error:", error);
       setErrorMessage(`Payment failed. ${error.message}`);

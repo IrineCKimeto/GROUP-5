@@ -1,6 +1,8 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import Home from "./pages/Home"
+import Tickets from "./pages/Tickets"
+
 import SignIn from "./pages/SignIn"
 import Events from "./pages/Events"
 import AboutUs from "./pages/AboutUs"
@@ -61,6 +63,7 @@ function App() {
                 <UserProfile />
               </ProtectedRoute>
             } />
+            <Route path="/tickets" element={<Tickets />} />
             <Route path="/admin/tickets" element={<AdminTickets />} />
           </Routes>
         </main>
