@@ -10,7 +10,7 @@ function Events() {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [cartItems, setCartItems] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [eventsData, setEventsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
