@@ -1,5 +1,3 @@
-// src/components/Navbar.js
-
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logo from "../logo/eventify-logo.png";
@@ -94,13 +92,24 @@ function Navbar() {
             </li>
           )}
           <li>
+            <Link to="/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+              Tickets
+            </Link>
+          </li>
+          <li>
             <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
               Support
             </Link>
           </li>
+
+          <li>
+            <Link to="/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+              Tickets
+            </Link>
+          </li>
           {/* Move Profile and Notifications to appear only for logged in users */}
           {user ? (
-            <>
+            <ul>
               {user.role !== "admin" && (
                 <li>
                   <Link to="/profile" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
@@ -119,7 +128,7 @@ function Navbar() {
                   Logout
                 </button>
               </li>
-            </>
+            </ul>
           ) : (
             <li>
               <Link to="/signin" className="px-4 py-2 rounded-lg bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-colors duration-200">
@@ -147,7 +156,7 @@ function Navbar() {
                 {user?.role === "admin" ? "Admin Events" : "Events"}
               </Link>
             </li>
-              {user?.role !== "admin" && (
+            {user?.role !== "admin" && (
               <li>
                 <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                   About Us
@@ -155,19 +164,17 @@ function Navbar() {
               </li>
             )}
             {user?.role === "admin" && (
+              <li>
+                <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                  Manage Tickets
+                </Link>
+              </li>
+            )}
             <li>
-              <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-                Manage Tickets
+              <Link to="/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
+                Tickets
               </Link>
             </li>
-          )}
-            {user?.role !== "admin" && (
-            <li>
-              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-                About Us
-              </Link>
-            </li>
-          )}
             <li>
               <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                 Support
