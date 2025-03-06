@@ -50,10 +50,20 @@ db.init_app(app)
 app.register_blueprint(routes)
 
 
-jwt_manager = JWTManager(app)
+def get_access_token():
+    url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+    response = requests.get(url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
+    return response.json().get("access_token") if response.status_code == 200 else None
 
+# Helper function to generate M-Pesa password
+def generate_password(shortcode, passkey, timestamp):
+    data_to_encode = f"{shortcode}{passkey}{timestamp}"
+    return base64.b64encode(data_to_encode.encode()).decode('utf-8')
 
-api = Api(app)
+# Helper function to get timestamp
+def get_timestamp():
+    return datetime.now().strftime("%Y%m%d%H%M%S")
+
 
 # Request parsers for input validation
 user_parser = reqparse.RequestParser()
@@ -127,7 +137,6 @@ class TicketListResource(Resource):
         event = Event.query.get_or_404(args['event_id'])
         if event.available_tickets < 1:
             return {"message": "No tickets available"}, 400
-        # Create a ticket with an initial status of 'confirmed'
         ticket = Ticket(event_id=event.id, user_id=current_user["id"], status="confirmed")
         event.available_tickets -= 1
         db.session.add(ticket)
@@ -152,29 +161,12 @@ class PaymentListResource(Resource):
         } for p in payments], 200
 
 # Register RESTful resources
+api = Api(app)
 api.add_resource(UserListResource, '/api/users')
 api.add_resource(EventListResource, '/api/events')
 api.add_resource(TicketListResource, '/api/tickets')
 api.add_resource(PaymentListResource, '/api/payments')
 
-
-def get_access_token():
-    url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-    response = requests.get(url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
-    if response.status_code == 200:
-        return response.json().get("access_token")
-    return None
-
-# Helper function: generate password for M-Pesa API
-def generate_password(shortcode, passkey, timestamp):
-    data_to_encode = f"{shortcode}{passkey}{timestamp}"
-    return base64.b64encode(data_to_encode.encode()).decode('utf-8')
-
-# Helper function: get current timestamp in required format
-def get_timestamp():
-    return datetime.now().strftime("%Y%m%d%H%M%S")
-
-# M-Pesa STK Push Endpoint (now protected by JWT)
 @app.route('/mpesa/stk-push', methods=['POST'])
 @jwt_required()
 def mpesa_stk_push():
@@ -183,7 +175,6 @@ def mpesa_stk_push():
     amount = data.get('amount')
     ticket_id = data.get('ticket_id')
 
-    # Validate that the ticket exists and belongs to the current user
     ticket = Ticket.query.get(ticket_id)
     if not ticket:
         return jsonify({"message": "Ticket not found"}), 404
@@ -191,7 +182,6 @@ def mpesa_stk_push():
     if ticket.user_id != current_user["id"]:
         return jsonify({"message": "Access Forbidden: This ticket does not belong to you"}), 403
 
-    # Create a Payment record (status pending)
     payment = Payment(user_id=current_user["id"], ticket_id=ticket_id, amount=amount, status="pending")
     db.session.add(payment)
     db.session.commit()
@@ -203,7 +193,6 @@ def mpesa_stk_push():
     timestamp = get_timestamp()
     password = generate_password(SHORTCODE, PASSKEY, timestamp)
 
-    # Include the ticket ID in the AccountReference so it can be traced in the callback
     payload = {
         "BusinessShortCode": SHORTCODE,
         "Password": password,
@@ -223,7 +212,6 @@ def mpesa_stk_push():
                              json=payload, headers=headers)
     resp_data = response.json()
 
-    # If a CheckoutRequestID is returned, store it in the Payment record for matching in the callback
     checkout_request_id = resp_data.get("CheckoutRequestID")
     if checkout_request_id:
         payment.transaction_id = checkout_request_id
@@ -231,11 +219,9 @@ def mpesa_stk_push():
 
     return jsonify(resp_data), response.status_code
 
-# M-Pesa Callback Endpoint: updates Payment and Ticket statuses
 @app.route('/mpesa/callback', methods=['POST'])
 def mpesa_callback():
     data = request.get_json()
-    # Log the callback data (ensure you handle sensitive data appropriately)
     with open("mpesa_callback.log", "a") as log_file:
         log_file.write(json.dumps(data, indent=4) + "\n\n")
 
@@ -245,7 +231,6 @@ def mpesa_callback():
         result_desc = stk_callback.get('ResultDesc')
         checkout_request_id = stk_callback.get('CheckoutRequestID')
 
-        # Find the Payment record corresponding to this CheckoutRequestID
         payment = Payment.query.filter_by(transaction_id=checkout_request_id).first()
 
         if result_code == 0 and payment:
