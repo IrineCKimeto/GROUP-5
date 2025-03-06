@@ -1,38 +1,125 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function UserProfile() {
-  const [user, setUser] = useState({
-    name: "Group 5",
-    email: "group5@example.com",
-    phone: "+254712345678",
-    location: "Nairobi, Kenya",
-    joinedDate: "January 2025",
-    tickets: [
-      {
-        id: 1,
-        eventName: "Tech Conference 2025",
-        date: "2025-03-15",
-        status: "active",
-        ticketType: "VIP Pass"
-      },
-      {
-        id: 2,
-        eventName: "Music Festival",
-        date: "2025-04-20",
-        status: "used",
-        ticketType: "Regular Entry"
-      }
-    ]
-  });
-
+  // Assume we get the current user ID from authentication/context
+  const currentUserId = "user2"; // This would normally come from auth context
+  
+  const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState(user);
+  const [updatedUser, setUpdatedUser] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleUpdate = (e) => {
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          throw new Error('No access token found');
+        }
+
+        const response = await fetch('https://group-5-new.onrender.com/user-details', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+
+        const userData = await response.json();
+        setUser(userData);
+        setUpdatedUser(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Redirect to login if unauthorized
+        if (error.message.includes('token')) {
+          window.location.href = '/signin';
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    setUser(updatedUser);
-    setIsEditing(false);
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error('No access token found');
+      }
+
+      const updateResponse = await fetch('https://group-5-new.onrender.com/update-profile', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (!updateResponse.ok) {
+        throw new Error('Failed to update user data');
+      }
+
+      setUser(updatedUser);
+      setIsEditing(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating user data:', error);
+      alert('Failed to update profile. Please try again.');
+    }
   };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      // First get the current users object
+      const getUsersResponse = await fetch('http://localhost:3001/users');
+      if (!getUsersResponse.ok) {
+        throw new Error('Failed to fetch users data');
+      }
+      const usersData = await getUsersResponse.json();
+
+      // Remove the current user from the users object
+      const { [currentUserId]: deletedUser, ...remainingUsers } = usersData;
+
+      // Update the users object without the deleted user
+      const deleteResponse = await fetch('http://localhost:3001/users', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ users: remainingUsers }),
+      });
+
+      if (!deleteResponse.ok) {
+        throw new Error('Failed to delete account');
+      }
+
+      // Clear local storage
+      localStorage.removeItem('user');
+      localStorage.removeItem('accessToken');
+
+      // Dispatch event to update navbar
+      window.dispatchEvent(new Event('userUpdated'));
+
+      // Redirect to home page
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('Failed to delete account. Please try again.');
+    }
+  };
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 pt-20">
@@ -148,43 +235,14 @@ function UserProfile() {
                       Change Password
                     </button>
                     <div className="block">
-                      <button className="text-red-500 hover:text-red-600 text-sm font-medium">
+                      <button 
+                        onClick={handleDeleteAccount} 
+                        className="text-red-500 hover:text-red-600 text-sm font-medium"
+                      >
                         Delete Account
                       </button>
                     </div>
                   </div>
-                </div>
-              </div>
-              
-              {/* Purchased Tickets Section */}
-              <div className="mt-8">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Purchased Tickets</h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {user.tickets.map((ticket) => (
-                        <tr key={ticket.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{ticket.eventName}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ticket.date}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ticket.ticketType}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                              ${ticket.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                              {ticket.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
                 </div>
               </div>
             </div>
