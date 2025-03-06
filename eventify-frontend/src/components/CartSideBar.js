@@ -20,10 +20,9 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
   }, [cartItems]);
 
   useEffect(() => {
-    // Check if user is logged in
+    
     const token = localStorage.getItem("accessToken");
     if (token) {
-      // Verify token validity
       fetch("https://group-5-new.onrender.com/verify-token", {
         method: "POST",
         headers: {
@@ -91,10 +90,11 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
         }
       }
 
-      const result = await response.json(); // Keep this line
+      const result = await response.json(); 
       console.log("Payment successful:", result);
       onCheckout();
-      navigate("/tickets"); // Redirect to Tickets page
+      navigate("/tickets");
+    
 
     } catch (error) {
       console.error("Payment error:", error);
