@@ -75,7 +75,9 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Payment error details:", errorData);
+      console.error("Payment error details:", errorData);
+      setErrorMessage(`Payment failed. ${errorData.message || response.statusText}`);
+
         if (errorData.message === "Failed to get M-Pesa access token") {
           // Retry logic or additional handling for access token failure
           throw new Error(
@@ -90,7 +92,9 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
         }
       }
 
-      const result = await response.json(); 
+      const result = await response.json();
+      setErrorMessage(""); // Clear any previous error messages
+
       console.log("Payment successful:", result);
       onCheckout();
       navigate("/tickets");
@@ -216,6 +220,8 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
                           value={phoneNumber}
                           onChange={(e) => setPhoneNumber(e.target.value)}
                           placeholder='254700000000'
+                          required
+
                           className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                         />
                       </div>
