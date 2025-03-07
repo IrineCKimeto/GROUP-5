@@ -41,7 +41,7 @@ const SignInForm = () => {
   
         window.dispatchEvent(new Event("userUpdated"));
   
-        navigate(data.role === "admin" ? "/admin/events" : "/profile");
+        navigate(data.role === "admin" ? "/admin/events" : "/events");
       } else {
         alert("Account created successfully! Please log in.");
         setIsRegister(false); // Switch back to login form

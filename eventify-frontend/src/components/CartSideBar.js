@@ -8,6 +8,8 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [paymentNotification, setPaymentNotification] = useState("");
+
 
   const [amount, setAmount] = useState(0);
 
@@ -93,11 +95,14 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
       }
 
       const result = await response.json();
-      setErrorMessage(""); // Clear any previous error messages
+      setErrorMessage(""); 
 
       console.log("Payment successful:", result);
+      setPaymentNotification("Payment being processed");
+
       onCheckout();
-      navigate("/tickets");
+
+      navigate("/");
     
 
     } catch (error) {
