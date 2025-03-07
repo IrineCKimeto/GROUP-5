@@ -146,7 +146,7 @@ function UserProfile() {
             </div>
             <div className="flex-1 text-center md:text-left">
               <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
-              <p className="text-gray-600">Member since {user.joinedDate}</p>
+              {/* <p className="text-gray-600">Member since {user.joinedDate}</p> */}
               <button
                 onClick={() => setIsEditing(!isEditing)}
                 className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -218,14 +218,14 @@ function UserProfile() {
                       <dt className="text-sm font-medium text-gray-500">Email</dt>
                       <dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
                     </div>
-                    <div>
+                    {/* <div>
                       <dt className="text-sm font-medium text-gray-500">Phone</dt>
                       <dd className="mt-1 text-sm text-gray-900">{user.phone}</dd>
                     </div>
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Location</dt>
                       <dd className="mt-1 text-sm text-gray-900">{user.location}</dd>
-                    </div>
+                    </div> */}
                   </dl>
                 </div>
                 <div>

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 function NotificationsIcon() {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [paymentNotification, setPaymentNotification] = useState(""); // New state for payment notification
 
   useEffect(() => {
     // Hypothetical notifications
@@ -17,6 +18,13 @@ function NotificationsIcon() {
 
     fetchNotifications();
   }, []);
+
+  useEffect(() => {
+    if (paymentNotification) {
+      setNotifications((prev) => [...prev, { id: Date.now(), message: paymentNotification }]);
+      setPaymentNotification(""); // Clear notification after displaying
+    }
+  }, [paymentNotification]);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);

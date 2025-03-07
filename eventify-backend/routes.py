@@ -72,6 +72,35 @@ def get_user_details():
         "role": user.role
     }), 200
 
+@routes.route("/users/<int:user_id>", methods=["PUT"])
+@jwt_required()
+def update_user(user_id):
+    current_user = json.loads(get_jwt_identity())
+    if current_user["role"] != "admin":
+        return jsonify({"error": "Access Forbidden: Admins only"}), 403
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    data = request.get_json()
+    user.name = data.get("name", user.name)
+    user.email = data.get("email", user.email)
+    user.role = data.get("role", user.role)
+    db.session.commit()
+    return jsonify({"message": "User updated successfully"})
+
+@routes.route("/users/<int:user_id>", methods=["DELETE"])
+@jwt_required()
+def delete_user(user_id):
+    current_user = json.loads(get_jwt_identity())
+    if current_user["role"] != "admin":
+        return jsonify({"error": "Access Forbidden: Admins only"}), 403
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": "User deleted successfully"})
+
 @routes.route("/events", methods=["GET"])
 def get_events():
     events = Event.query.all()
@@ -214,4 +243,21 @@ def delete_ticket(ticket_id):
     db.session.commit()
     return jsonify({"message": "Ticket deleted successfully"}), 200
 
+@routes.route("/change-password", methods=["POST"])
+@jwt_required()
+def change_password():
+    current_user = json.loads(get_jwt_identity())
+    data = request.get_json()
+    
+    if not data.get("current_password") or not data.get("new_password"):
+        return jsonify({"error": "Missing required fields"}), 400
 
+    user = User.query.get(current_user["id"])
+    if not user or not bcrypt.check_password_hash(user.password, data["current_password"]):
+        return jsonify({"error": "Current password is incorrect"}), 401
+
+    hashed_new_password = bcrypt.generate_password_hash(data["new_password"]).decode("utf-8")
+    user.password = hashed_new_password
+    db.session.commit()
+
+    return jsonify({"message": "Password changed successfully"}), 200
