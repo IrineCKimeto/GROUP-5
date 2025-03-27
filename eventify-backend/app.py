@@ -165,6 +165,13 @@ def mpesa_callback():
         result_desc = data['Body']['stkCallback']['ResultDesc']
 
         if result_code == 0:
+            # Update ticket status in the database
+            ticket_id = data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value']
+            ticket = Ticket.query.get(ticket_id)
+            if ticket:
+                ticket.status = 'paid'
+                db.session.commit()
+
             callback_metadata = data['Body']['stkCallback']['CallbackMetadata']['Item']
             amount = next(item['Value'] for item in callback_metadata if item['Name'] == 'Amount')
             mpesa_receipt_number = next(item['Value'] for item in callback_metadata if item['Name'] == 'MpesaReceiptNumber')
