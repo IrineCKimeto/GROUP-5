@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
+// Removed unused NotificationsIcon import
+
 import { useNavigate } from "react-router-dom";
 
-function CartSidebar({ cartItems, onRemove, onCheckout }) {
+function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }) {
+
   const [isOpen, setIsOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [phoneNumber, setPhoneNumber] = useState("");
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [paymentNotification, setPaymentNotification] = useState("");
+  // Removed local state for paymentNotification
 
 
   const [amount, setAmount] = useState(0);
@@ -22,7 +25,6 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
   }, [cartItems]);
 
   useEffect(() => {
-    
     const token = localStorage.getItem("accessToken");
     if (token) {
       fetch("https://group-5-new.onrender.com/verify-token", {
@@ -77,11 +79,10 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-      console.error("Payment error details:", errorData);
-      setErrorMessage(`Payment failed. ${errorData.message || response.statusText}`);
+        console.error("Payment error details:", errorData);
+        setErrorMessage(`Payment failed. ${errorData.message || response.statusText}`);
 
         if (errorData.message === "Failed to get M-Pesa access token") {
-          // Retry logic or additional handling for access token failure
           throw new Error(
             "Failed to process payment: M-Pesa access token issue. Please try again later."
           );
@@ -98,13 +99,12 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
       setErrorMessage(""); 
 
       console.log("Payment successful:", result);
-      setPaymentNotification("Payment being processed");
+      // setPaymentNotification("Payment successful"); // Trigger notification
 
-      onCheckout();
+
+      onCheckout(cartItems); 
 
       navigate("/");
-    
-
     } catch (error) {
       console.error("Payment error:", error);
       setErrorMessage(`Payment failed. ${error.message}`);
@@ -113,7 +113,6 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
 
   return (
     <>
-      {/* Floating Cart Button Positioned in the Middle-Right of the Page */}
       <button
         onClick={toggleSidebar}
         className='fixed right-8 top-1/2 transform -translate-y-1/2 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors'
@@ -139,7 +138,6 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
         )}
       </button>
 
-      {/* Sliding Cart Sidebar */}
       <div
         className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-lg z-40 transform transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -226,7 +224,6 @@ function CartSidebar({ cartItems, onRemove, onCheckout }) {
                           onChange={(e) => setPhoneNumber(e.target.value)}
                           placeholder='254700000000'
                           required
-
                           className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                         />
                       </div>

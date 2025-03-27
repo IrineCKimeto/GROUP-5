@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import UserProfile from "./pages/UserProfile";
 import AdminEvents from './pages/AdminEvents';
 import AdminTickets from './pages/AdminTickets';
+import TicketPage from "./pages/TicketPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -53,6 +54,8 @@ function App() {
             <Route path="/support" element={<Support />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/admin/tickets" element={<AdminTickets />} />
+            <Route path="/tickets" element={<TicketPage />} />
+
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfile />

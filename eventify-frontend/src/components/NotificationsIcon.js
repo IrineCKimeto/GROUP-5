@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 
-function NotificationsIcon() {
+function NotificationsIcon({ setPaymentNotification }) {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [paymentNotification, setPaymentNotification] = useState(""); // New state for payment notification
+  const [paymentNotification, setPaymentNotificationState] = useState("");
 
   useEffect(() => {
-    // Hypothetical notifications
     const fetchNotifications = async () => {
       const data = [
         { id: 1, message: "New event created!" },
@@ -22,12 +21,16 @@ function NotificationsIcon() {
   useEffect(() => {
     if (paymentNotification) {
       setNotifications((prev) => [...prev, { id: Date.now(), message: paymentNotification }]);
-      setPaymentNotification(""); // Clear notification after displaying
+      setPaymentNotificationState("");
     }
   }, [paymentNotification]);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
+  };
+
+  const handleNotificationClick = (id) => {
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };
 
   return (
@@ -45,7 +48,9 @@ function NotificationsIcon() {
           <ul>
             {notifications.map((notification) => (
               <li key={notification.id} className="px-4 py-2 text-gray-800 border-b border-gray-200">
-                {notification.message}
+                <span onClick={() => handleNotificationClick(notification.id)} className="cursor-pointer">
+                  {notification.message}
+                </span>
               </li>
             ))}
           </ul>

@@ -7,7 +7,7 @@ function UserProfile() {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [updatedUser, setUpdatedUser] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  // Removed unused state 'showDeleteModal'
 
   useEffect(() => {
     const fetchUserData = async () => {
