@@ -79,13 +79,6 @@ function Navbar() {
             </Link>
           </li>
 
-          {user?.role === "admin" && (
-            <li>
-              <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-                Manage Tickets
-              </Link>
-            </li>
-          )}
           {user?.role !== "admin" && (
             <li>
               <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
@@ -152,13 +145,7 @@ function Navbar() {
                 </Link>
               </li>
             )}
-            {user?.role === "admin" && (
-            <li>
-              <Link to="/admin/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-                Manage Tickets
-              </Link>
-            </li>
-          )}
+            
             {user?.role !== "admin" && (
             <li>
               <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
