@@ -1,5 +1,3 @@
-// src/components/Navbar.js
-
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logo from "../logo/eventify-logo.png";
@@ -91,11 +89,16 @@ function Navbar() {
               Support
             </Link>
           </li>
-          <li>
-            <Link to="/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-              Tickets
-            </Link>
-          </li>
+          
+          {/* Tickets link now only visible for logged-in users */}
+          {user && (
+            <li>
+              <Link to="/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
+                Tickets
+              </Link>
+            </li>
+          )}
+          
           {/* Move Profile and Notifications to appear only for logged in users */}
           {user ? (
             <>
@@ -143,7 +146,8 @@ function Navbar() {
                 {user?.role === "admin" ? "Admin Events" : "Events"}
               </Link>
             </li>
-              {user?.role !== "admin" && (
+
+            {user?.role !== "admin" && (
               <li>
                 <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                   About Us
@@ -151,18 +155,21 @@ function Navbar() {
               </li>
             )}
             
-            {user?.role !== "admin" && (
-            <li>
-              <Link to="/about-us" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors">
-                About Us
-              </Link>
-            </li>
-          )}
             <li>
               <Link to="/support" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
                 Support
               </Link>
             </li>
+
+            {/* Tickets link now only visible for logged-in users in mobile menu */}
+            {user && (
+              <li>
+                <Link to="/tickets" className="text-gray-200 hover:text-cyan-400 font-medium transition-colors block py-2">
+                  Tickets
+                </Link>
+              </li>
+            )}
+            
             {user ? (
               <>
                 <li>

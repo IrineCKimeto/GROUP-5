@@ -10,7 +10,7 @@ function Events() {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [cartItems, setCartItems] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); 
   const [eventsData, setEventsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -261,7 +261,12 @@ function Events() {
           onClose={() => setSelectedEvent(null)}
         />
       )}
-
+ <button 
+        onClick={() => setSidebarOpen(true)} 
+        className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg z-50 hover:bg-blue-700 transition-colors"
+      >
+        🛒 Cart ({cartItems.length})
+      </button>
       {/* The CartSidebar component includes a fixed floating button at the bottom-right */}
       <CartSidebar
         isOpen={sidebarOpen}

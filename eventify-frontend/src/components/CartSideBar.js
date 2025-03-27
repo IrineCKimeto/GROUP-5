@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }) {
-  const [isOpen, setIsOpen] = useState(false);
+function CartSidebar({ cartItems, onRemove, onCheckout, isOpen, onClose }) {
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [phoneNumber, setPhoneNumber] = useState("");
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [amount, setAmount] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState('');
+  const [eventsData, setEventsData] = useState([]);
+  const [paymentNotification, setPaymentNotification] = useState(null);
 
   useEffect(() => {
     const totalAmount = cartItems.reduce(
@@ -40,9 +42,22 @@ function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }
     }
   }, []);
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('https://group-5-new.onrender.com/events');
+        if (!response.ok) {
+          throw new Error('Failed to fetch events');
+        }
+        const data = await response.json();
+        setEventsData(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -58,7 +73,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }
 
     try {
       const token = localStorage.getItem("accessToken");
-      
+
       // First, book the ticket
       const ticketResponse = await fetch('https://group-5-new.onrender.com/tickets', {
         method: 'POST',
@@ -98,7 +113,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }
       }
 
       const result = await response.json();
-      
+
       // Set successful payment notification
       setPaymentNotification({
         type: 'success', 
@@ -110,7 +125,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }
 
     } catch (error) {
       console.error("Payment error:", error);
-      
+
       // Set error payment notification
       setPaymentNotification({
         type: 'error', 
@@ -119,39 +134,57 @@ function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }
     }
   };
 
-  // Rest of the component remains the same, but add state for event selection
-  const [selectedEvent, setSelectedEvent] = useState('');
-  const [eventsData, setEventsData] = useState([]);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('https://group-5-new.onrender.com/events');
-        if (!response.ok) {
-          throw new Error('Failed to fetch events');
-        }
-        const data = await response.json();
-        setEventsData(data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-
-    fetchEvents();
-  }, []);
-
   return (
-    <>
-      {/* Previous button code remains the same */}
-      
-      <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-lg z-40 transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className='p-6 flex flex-col h-full'>
-          {/* Previous code remains the same */}
-          
+    <div
+      className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+        isOpen ? "translate-x-0" : "translate-x-full"
+      }`}
+    >
+      <div className='p-6 flex flex-col h-full'>
+        <div className='flex justify-between items-center mb-4'>
+          <h2 className='text-2xl font-bold'>Your Cart</h2>
+          <button 
+            onClick={onClose} 
+            className='text-gray-500 hover:text-gray-700'
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Cart Items */}
+        <div className='flex-grow overflow-y-auto'>
+          {cartItems.length === 0 ? (
+            <p className='text-center text-gray-500'>Your cart is empty</p>
+          ) : (
+            cartItems.map((item) => (
+              <div 
+                key={item.id} 
+                className='flex justify-between items-center border-b py-3'
+              >
+                <div>
+                  <h3 className='font-semibold'>{item.title}</h3>
+                  <p className='text-sm text-gray-500'>
+                    KES {item.ticket_price} x {item.quantity}
+                  </p>
+                </div>
+                <button 
+                  onClick={() => onRemove(item.id)}
+                  className='text-red-500 hover:text-red-700'
+                >
+                  Remove
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Total and Checkout */}
+        <div className='mt-6 border-t pt-4'>
+          <div className='flex justify-between mb-4'>
+            <span className='font-bold'>Total:</span>
+            <span>KES {cartItems.reduce((total, item) => total + item.ticket_price * item.quantity, 0)}</span>
+          </div>
+
           <div className='mt-6 border-t pt-6'>
             <h3 className='text-xl font-semibold mb-4'>Event Selection</h3>
             <select 
@@ -171,7 +204,23 @@ function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }
           <div className='mt-6 border-t pt-6'>
             <h3 className='text-xl font-semibold mb-4'>Payment Details</h3>
             <form onSubmit={handlePayment} className='space-y-4'>
-              {/* Previous payment form code remains the same */}
+              <div>
+                <label className='block mb-2'>Phone Number</label>
+                <input 
+                  type='tel' 
+                  value={phoneNumber} 
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder='Enter M-Pesa Number'
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md'
+                  required 
+                />
+              </div>
+              <button 
+                type='submit' 
+                className='w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors'
+              >
+                Proceed to Payment
+              </button>
             </form>
             {errorMessage && (
               <div className='text-red-500 text-sm mt-2'>
@@ -181,7 +230,7 @@ function CartSidebar({ cartItems, onRemove, onCheckout, setPaymentNotification }
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
